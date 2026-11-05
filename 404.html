@@ -3,23 +3,29 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Page not found | Walsh Classroom</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Unbounded:wght@700;800&family=Young+Serif&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/wc.css">
+  <title>Page not found | Walsh Classroom</title>
   <style>
-    :root { --paper:#f5f0e6; --ink:#1c1917; --ink-2:#57534e; --accent:#c2410c; }
-    @media (prefers-color-scheme: dark) { :root { --paper:#171513; --ink:#f5f0e6; --ink-2:#c9c0b2; --accent:#fb923c; } }
-    body { margin:0; min-height:100vh; display:grid; place-items:center; background:var(--paper); color:var(--ink);
-      font:18px/1.6 system-ui, sans-serif; padding:16px; box-sizing:border-box; text-align:center; }
-    h1 { font-size:clamp(40px,8vw,72px); margin:0 0 8px; letter-spacing:-0.02em; }
-    p { color:var(--ink-2); margin:0 0 24px; }
-    a { color:var(--accent); font-weight:700; }
+    .nf { min-height: calc(100vh - 69px); display: grid; place-items: center; text-align: center; padding: 48px 16px; }
+    .nf .mark { width: 120px; color: var(--raspberry); margin: 0 auto 28px; transform: rotate(-8deg); }
+    .nf h1 { font-size: clamp(32px, 6vw, 64px); max-width: 16ch; margin: 0 auto; }
+    .nf p { color: var(--ink-2); margin: 18px auto 28px; max-width: 40ch; }
   </style>
 </head>
 <body>
-  <div>
-    <h1>Cut! Wrong take.</h1>
-    <p>That page isn't here. It may have moved or been renamed.</p>
-    <a href="/">Back to all the tools &rarr;</a>
-  </div>
+  <header id="site-header"></header>
+  <main class="nf">
+    <div>
+      <span class="mark" aria-hidden="true"></span>
+      <h1 class="display">This scene didn't make the final cut.</h1>
+      <p>That page isn't here. It may have moved, or the link has a typo.</p>
+      <a class="btn" href="/">Back to all the apps</a>
+    </div>
+  </main>
+  <script src="/assets/site.js"></script>
 </body>
 </html>

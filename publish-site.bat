@@ -7,6 +7,9 @@ git add -A
 git commit -m "Update site" >nul 2>&1
 if errorlevel 1 echo No new changes to save. Pushing anyway.
 
+echo Getting the latest app list from GitHub first.
+git pull --rebase origin main
+
 echo Uploading to GitHub. A sign-in window may open the first time.
 git push -u origin main
 

@@ -1,61 +1,69 @@
 # walshclassroom.com
 
-The home page for Mr. Walsh's classroom apps, games, and tools. Hosted free on GitHub Pages.
+The hub for Mr. Walsh's classroom apps, games and tools. It's hosted free on GitHub Pages.
+For the design decisions, see [brand/DESIGN.md](brand/DESIGN.md). For how the platform works and the build plan, see [brand/PLATFORM.md](brand/PLATFORM.md).
 
 ## How it works
 
-This repo is named `twalsh95.github.io`, which makes it your GitHub **user site**. Because it
-has the custom domain walshclassroom.com, GitHub also serves **every one of your repos that has
-Pages turned on** at `walshclassroom.com/<repo-name>/`:
+This repo is named `twalsh95.github.io`, which makes it your GitHub **user site**. It has the custom domain walshclassroom.com, so GitHub also serves **every repo of yours that has Pages turned on** at `walshclassroom.com/<repo-name>/`:
 
 | Repo                 | Address                                       |
 |----------------------|-----------------------------------------------|
-| twalsh95.github.io   | walshclassroom.com (this home page)           |
+| twalsh95.github.io   | walshclassroom.com (this hub)                 |
 | narrative-studio-2   | walshclassroom.com/narrative-studio-2/        |
 | guide-match          | walshclassroom.com/guide-match/               |
-| triton-alumni-portal | walshclassroom.com/triton-alumni-portal/ (hidden: no tile) |
-
-Each app keeps its own repo, and you keep pushing to it the way you do now. Old
-`twalsh95.github.io/...` links redirect to the new addresses on their own.
-
-To keep a repo off walshclassroom.com, turn its Pages off, or give it its own domain
-in that repo's Settings > Pages.
+| triton-alumni-portal | walshclassroom.com/triton-alumni-portal/ (hidden: no card) |
 
 ## Files
 
 ```
-index.html        The home page
-apps.js           THE APP LIST. Edit this to add or change tiles.
-404.html          "Page not found"
-CNAME             Tells GitHub Pages to use walshclassroom.com
-publish-site.bat  Double-click to publish your changes
+index.html             Home page: the hero, the app strip, and the app cards
+teachers/              "For teachers": index.html lists the explainers; one page per app at teachers/<id>/
+help/                  Student help: general FAQ plus a section for each app
+404.html               "This scene didn't make the final cut."
+apps.js                YOUR OVERRIDES for the app list, plus each app's explainer and help text
+data/repos.json        The automatic app list (rebuilt by GitHub every day; don't edit by hand)
+platform/wc.js         The Walsh Classroom bar for apps, and the app-list loader
+assets/wc.css          Shared styles (colors, type, components)
+assets/site.js         Shared header, footer, theme toggle and app cards
+assets/pages.js        Draws the explainer and help pages from the app list
+assets/logo/           The beard mark: beard-mark.svg (one color), beard-mark-simple.svg (small sizes), beard-mark-two-tone.svg
+favicon.svg            The browser-tab icon (switches for dark mode)
+scripts/build-app-list.mjs     Builds data/repos.json and the explainer pages
+.github/workflows/app-list.yml Runs that script daily, and whenever apps.js changes
+brand/                 Design and platform notes, plus your original logo files
+publish-site.bat       Double-click to publish your changes
 ```
 
 ## Add an app
 
-1. In the app's repo: Settings > Pages > deploy from the `main` branch. It appears at `walshclassroom.com/<repo-name>/`.
-2. Add a block to `apps.js` with `href: "/<repo-name>/"`.
-3. Double-click `publish-site.bat`.
+**The automatic way:**
+1. In the app's repo, go to Settings > Pages and deploy from the `main` branch.
+2. On the repo's main page, click the gear next to **About** and add the topic `walshclassroom`.
+3. Optional: add a `walshclassroom.json` file to the repo root with any of the fields described at the top of `apps.js`. For example:
+   ```json
+   { "name": "Virtual Claymation Studio", "kind": "App", "color": "#0B5874", "icon": "clay",
+     "tagline": "Pose clay characters and shoot stop-motion in your browser." }
+   ```
+4. Add the bar to the app (see below).
 
-Email/password sign-in (what Narrative Studio uses) works on any domain. If an app ever uses
-Google sign-in or email-link sign-in, add `walshclassroom.com` under Firebase console >
-Authentication > Settings > Authorized domains, or those sign-ins will fail.
+The app appears within a day. To make it appear now, go to the Actions tab, choose **Update app list**, then click **Run workflow**.
 
-## Going live (one time)
+**The manual way, or to change how an app looks:** edit `apps.js`, then run `publish-site.bat`. Anything set in `apps.js` wins over the automatic list, and the order there sets the order on the home page.
 
-1. **Create the repo.** Go to github.com/new and name it exactly `twalsh95.github.io`. Make it **Public** and don't add a README.
-2. **Upload this folder.** Commit it and push to `main`.
-3. **Turn on Pages.** In the repo: Settings > Pages > Source: **Deploy from a branch**, branch `main`, folder `/ (root)`. Under Custom domain enter `walshclassroom.com` and Save.
-4. **Point the domain (Cloudflare dashboard > walshclassroom.com > DNS > Records).** Delete any existing A/AAAA/CNAME records for `@` and `www`, then add:
+**Explainers and help:** add an `about` section (the teacher explainer) and a `help` section (student help) to the app's entry in `apps.js`. The Narrative Studio entry shows the format. The explainer page at `/teachers/<id>/` is created automatically the next time the workflow runs. To create it right away, run `node scripts/build-app-list.mjs --offline`.
 
-   | Type  | Name | Content                | Proxy status |
-   |-------|------|------------------------|--------------|
-   | A     | @    | 185.199.108.153        | DNS only (grey cloud) |
-   | A     | @    | 185.199.109.153        | DNS only |
-   | A     | @    | 185.199.110.153        | DNS only |
-   | A     | @    | 185.199.111.153        | DNS only |
-   | CNAME | www  | twalsh95.github.io     | DNS only |
+## Add the Walsh Classroom bar to an app
 
-   Keep the cloud grey (DNS only). An orange cloud stops GitHub from issuing the HTTPS certificate.
-5. **Turn on HTTPS.** Back in Settings > Pages, once the DNS check passes (minutes to a few hours), tick **Enforce HTTPS**.
-6. **Optional but smart:** GitHub profile Settings > Pages > Add a domain. Verifying it stops anyone else from claiming walshclassroom.com on GitHub.
+Add one line to the app's `index.html`, just before `</body>`:
+
+```html
+<script src="/platform/wc.js" defer></script>
+```
+
+The bar sits at the top of the app and pushes the page down 44px. If the app has its own header pinned to the top (`position: fixed` or `sticky` with `top: 0`), change that header's `top` to `var(--wc-bar-height, 0px)` so it sits under the bar.
+
+## Notes
+
+- Email/password sign-in (what Narrative Studio uses) works on any domain. If an app ever uses Google sign-in or email-link sign-in, add `walshclassroom.com` under Firebase console > Authentication > Settings > Authorized domains.
+- The daily workflow commits as `github-actions[bot]`. If its commits ever stop showing up on the live site, check the Actions tab for a failed **pages build and deployment** run.

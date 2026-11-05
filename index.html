@@ -4,289 +4,97 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Walsh Classroom</title>
-  <meta name="description" content="Apps, games, and studio tools built by Mr. Walsh for media arts classes. Free, and they run in your browser.">
+  <meta name="description" content="Apps, games, and tools Tom Walsh builds for his media arts classes. Students sign in once; teachers can look around.">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <meta property="og:title" content="Walsh Classroom">
-  <meta property="og:description" content="Apps, games, and studio tools built for media arts classes.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --paper: #f5f0e6;
-      --paper-2: #ebe3d3;
-      --card: #fffdf8;
-      --ink: #1c1917;
-      --ink-2: #57534e;
-      --ink-3: #78716c;
-      --line: #d6ccb8;
-      --accent: #c2410c;
-      --accent-ink: #ffffff;
-      --focus: #2563eb;
-      --shadow: 0 1px 0 rgba(28,25,23,.06), 0 8px 24px -12px rgba(28,25,23,.25);
-      --radius: 18px;
-      color-scheme: light;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root:not([data-theme="light"]) {
-        --paper: #171513; --paper-2: #211e1b; --card: #24201c;
-        --ink: #f5f0e6; --ink-2: #c9c0b2; --ink-3: #a39a8c;
-        --line: #3a342e; --accent: #fb923c; --accent-ink: #1c1917; --focus: #93c5fd;
-        --shadow: 0 1px 0 rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
-        color-scheme: dark;
-      }
-    }
-    :root[data-theme="dark"] {
-      --paper: #171513; --paper-2: #211e1b; --card: #24201c;
-      --ink: #f5f0e6; --ink-2: #c9c0b2; --ink-3: #a39a8c;
-      --line: #3a342e; --accent: #fb923c; --accent-ink: #1c1917; --focus: #93c5fd;
-      --shadow: 0 1px 0 rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
-      color-scheme: dark;
-    }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      background: var(--paper);
-      color: var(--ink);
-      font: 18px/1.6 "Atkinson Hyperlegible", system-ui, sans-serif;
-      -webkit-font-smoothing: antialiased;
-    }
-    a { color: inherit; }
-    :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 6px; }
-    .wrap { width: min(1120px, 100% - 32px); margin-inline: auto; }
-    h1, h2, h3 { font-family: "Bricolage Grotesque", system-ui, sans-serif; line-height: 1.05; margin: 0; letter-spacing: -0.02em; }
-
-    /* Header */
-    header.top { border-bottom: 1px solid var(--line); }
-    header.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 68px; }
-    .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 21px; letter-spacing: -0.02em; }
-    .brand svg { width: 34px; height: 34px; }
-    nav.links { display: flex; gap: 6px; align-items: center; }
-    nav.links a, .theme-btn {
-      text-decoration: none; font-size: 16px; padding: 8px 12px; border-radius: 999px; color: var(--ink-2);
-      background: none; border: 0; font: inherit; font-size: 16px; cursor: pointer;
-    }
-    nav.links a:hover, .theme-btn:hover { background: var(--paper-2); color: var(--ink); }
-    .theme-btn { display: inline-grid; place-items: center; width: 40px; height: 40px; padding: 0; }
-    .theme-btn svg { width: 20px; height: 20px; }
-
-    /* Hero */
-    .hero { padding: 72px 0 40px; display: grid; grid-template-columns: 1.3fr 1fr; gap: 48px; align-items: end; }
-    .eyebrow { font-size: 14px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin: 0 0 16px; }
-    .hero h1 { font-size: clamp(44px, 7.5vw, 88px); font-weight: 800; }
-    .hero h1 em { font-style: normal; color: var(--accent); }
-    .hero p.lede { font-size: 20px; color: var(--ink-2); margin: 0; max-width: 34ch; }
-    .strip { display: flex; gap: 8px; margin-top: 18px; }
-    .strip span { flex: 1; height: 10px; border-radius: 3px; }
-
-    /* Toolbar */
-    .toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; padding: 24px 0 20px; border-top: 2px solid var(--ink); margin-top: 24px; }
-    .toolbar h2 { font-size: 28px; font-weight: 700; }
-    .filters { display: flex; flex-wrap: wrap; gap: 8px; }
-    .chip {
-      font: inherit; font-size: 15px; font-weight: 700; padding: 7px 14px; border-radius: 999px;
-      border: 1.5px solid var(--line); background: var(--card); color: var(--ink-2); cursor: pointer;
-    }
-    .chip:hover { border-color: var(--ink-3); color: var(--ink); }
-    .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-
-    /* Grid */
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; padding-bottom: 24px; }
-    .card {
-      position: relative; display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--line);
-      border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; text-decoration: none;
-      transition: transform .18s ease, box-shadow .18s ease;
-    }
-    a.card:hover { transform: translateY(-3px); box-shadow: 0 1px 0 rgba(28,25,23,.06), 0 18px 36px -16px rgba(28,25,23,.4); }
-    .card .band { height: 128px; position: relative; display: grid; place-items: center; background: var(--c); overflow: hidden; }
-    .card .band::before {
-      content: ""; position: absolute; inset: 0; opacity: .18;
-      background-image: radial-gradient(circle at 1px 1px, #fff 1.2px, transparent 1.4px); background-size: 14px 14px;
-    }
-    .card .band svg { width: 60px; height: 60px; color: #fff; position: relative; filter: drop-shadow(0 2px 0 rgba(0,0,0,.15)); }
-    .card .body { padding: 20px 22px 22px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
-    .card h3 { font-size: 26px; font-weight: 700; }
-    .card .tagline { margin: 0; font-weight: 700; color: var(--ink-2); line-height: 1.4; }
-    .card .desc { margin: 0; color: var(--ink-2); font-size: 16px; }
-    .card .note { margin: 0; color: var(--ink-3); font-size: 14px; font-style: italic; }
-    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 6px; }
-    .tag { font-size: 13px; padding: 2px 10px; border-radius: 999px; background: var(--paper-2); color: var(--ink-2); }
-    .badge {
-      position: absolute; top: 14px; left: 14px; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
-      padding: 4px 10px; border-radius: 999px; background: rgba(255,255,255,.92); color: #1c1917;
-    }
-    .open { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--accent); }
-    .card.soon { box-shadow: none; border-style: dashed; }
-    .card.soon .band { filter: grayscale(.55); opacity: .75; }
-    .card.placeholder { border: 2px dashed var(--line); background: transparent; box-shadow: none; justify-content: center; align-items: center; text-align: center; padding: 32px; min-height: 280px; color: var(--ink-3); }
-    .card.placeholder h3 { font-size: 22px; color: var(--ink-2); margin-bottom: 6px; }
-    .card.placeholder p { margin: 0; font-size: 16px; max-width: 26ch; }
-    .empty { color: var(--ink-3); padding: 24px 0; }
-
-    /* Teachers */
-    .teachers { margin: 56px 0 0; padding: 48px 0 56px; border-top: 2px solid var(--ink); display: grid; grid-template-columns: 1fr 1.4fr; gap: 48px; }
-    .teachers h2 { font-size: clamp(32px, 4vw, 44px); font-weight: 800; }
-    .teachers .intro { color: var(--ink-2); margin: 16px 0 0; }
-    .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 28px 32px; margin: 0; }
-    .facts div { border-top: 1px solid var(--line); padding-top: 14px; }
-    .facts dt { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 20px; margin-bottom: 4px; }
-    .facts dd { margin: 0; color: var(--ink-2); font-size: 16px; }
-
-    footer { border-top: 1px solid var(--line); padding: 28px 0 40px; color: var(--ink-3); font-size: 15px; }
-    footer .wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; }
-
-    @media (max-width: 820px) {
-      .hero { grid-template-columns: 1fr; gap: 20px; padding: 44px 0 24px; }
-      .teachers { grid-template-columns: 1fr; gap: 28px; }
-    }
-    @media (max-width: 560px) {
-      body { font-size: 17px; }
-      nav.links a.hide-sm { display: none; }
-      .grid { grid-template-columns: 1fr; }
-      .facts { grid-template-columns: 1fr; gap: 18px; }
-      .hero p.lede { font-size: 18px; }
-    }
-    @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Unbounded:wght@700;800&family=Young+Serif&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/wc.css">
+  <meta property="og:title" content="Walsh Classroom">
+  <meta property="og:description" content="Apps, games, and tools built for media arts classes.">
 </head>
 <body>
-  <header class="top">
-    <div class="wrap">
-      <a class="brand" href="/" aria-label="Walsh Classroom home">
-        <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="currentColor"/><path d="M12 18h7l5 22 6-22h4l6 22 5-22h7l-9 30h-6l-5-19-5 19h-6z" fill="var(--accent)"/></svg>
-        Walsh Classroom
-      </a>
-      <nav class="links" aria-label="Main">
-        <a href="#tools">Tools</a>
-        <a href="#teachers" class="hide-sm">For teachers</a>
-        <button class="theme-btn" id="themeBtn" type="button" aria-label="Switch light or dark mode">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-        </button>
-      </nav>
-    </div>
-  </header>
+  <a class="skip" href="#apps">Skip to the apps</a>
+  <header id="site-header"></header>
 
-  <main class="wrap">
-    <section class="hero">
-      <div>
-        <p class="eyebrow">Media arts classroom</p>
-        <h1>Make stuff.<br><em>Tell stories.</em></h1>
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="wrap">
+        <div>
+          <h1 class="display" id="hero-title">Built for my classroom.<span class="accent">Open to yours.</span></h1>
+          <p>Apps, games, and tools I make for my media arts classes. Students: everything your class uses is here. Teachers: look around, then take what works.</p>
+        </div>
+        <div class="hero-mark" aria-hidden="true"><span class="mark"></span></div>
       </div>
-      <div>
-        <p class="lede">Apps, games, and studio tools built by Mr. Walsh for class. They're free and they run in your browser, so there's nothing to install.</p>
-        <div class="strip" aria-hidden="true">
-          <span style="background:#c2410c"></span><span style="background:#ca8a04"></span><span style="background:#0f766e"></span><span style="background:#1d4ed8"></span><span style="background:#7e22ce"></span>
+      <nav class="strip" id="strip" aria-label="Open an app"></nav>
+    </section>
+
+    <section class="section band" id="apps" aria-labelledby="apps-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 class="display" id="apps-title">Pick a tool.</h2>
+          <div class="chips" id="filters" role="group" aria-label="Filter by type"></div>
+        </div>
+        <div class="grid" id="grid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="section" aria-label="Teachers and help">
+      <div class="wrap callouts">
+        <div class="callout teach">
+          <span class="eyebrow">For teachers</span>
+          <h2 class="display">Thinking about using one?</h2>
+          <p>Each app has a page for teachers: what students actually do in it, how it fits a class, and what it needs from you.</p>
+          <a class="btn" href="/teachers/">See the explainers</a>
+        </div>
+        <div class="callout help">
+          <span class="eyebrow">For students</span>
+          <h2 class="display">Stuck?</h2>
+          <p>Signing in, saving, finding your teacher's comments. The answers are on the help page, app by app.</p>
+          <a class="btn" href="/help/">Get help</a>
         </div>
       </div>
     </section>
-
-    <section id="tools" aria-labelledby="tools-h">
-      <div class="toolbar">
-        <h2 id="tools-h">The tools</h2>
-        <div class="filters" id="filters" role="group" aria-label="Filter by type"></div>
-      </div>
-      <div class="grid" id="grid"></div>
-    </section>
-
-    <section class="teachers" id="teachers" aria-labelledby="teachers-h">
-      <div>
-        <p class="eyebrow">For teachers</p>
-        <h2 id="teachers-h">Built in a classroom, for a classroom.</h2>
-        <p class="intro">I'm a media arts teacher. When I can't find the tool a lesson needs, I build it. Everything here was made for a real unit with real students, and you're welcome to use it with yours.</p>
-      </div>
-      <dl class="facts">
-        <div><dt>One sign-in, any device</dt><dd>Students sign in, and their work follows them from a class laptop to a home computer.</dd></div>
-        <div><dt>No ads, no subscriptions</dt><dd>Open a link and get to work. Nothing to buy and nothing to install.</dd></div>
-        <div><dt>Runs on school devices</dt><dd>Built for Chrome and Edge on MacBooks and Chromebooks. If your district filters sites, ask IT to allow walshclassroom.com.</dd></div>
-        <div><dt>Made with AI, tested in class</dt><dd>These were built with help from AI coding tools, then tried and revised with students.</dd></div>
-      </dl>
-    </section>
   </main>
 
-  <footer>
-    <div class="wrap">
-      <span>&copy; <span id="year"></span> Thomas Walsh &middot; walshclassroom.com</span>
-      <span>Made for students, shared with teachers.</span>
-    </div>
-  </footer>
+  <footer id="site-footer"></footer>
 
-  <script src="/apps.js"></script>
+  <script src="/platform/wc.js" data-bar="off"></script>
+  <script src="/assets/site.js"></script>
   <script>
     (function () {
-      // ---------- Theme toggle (remembers choice per browser) ----------
-      var root = document.documentElement;
-      try { var saved = localStorage.getItem("wc_theme"); if (saved) root.dataset.theme = saved; } catch (e) {}
-      document.getElementById("themeBtn").addEventListener("click", function () {
-        var dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
-        root.dataset.theme = dark ? "light" : "dark";
-        try { localStorage.setItem("wc_theme", root.dataset.theme); } catch (e) {}
-      });
-      document.getElementById("year").textContent = new Date().getFullYear();
+      var S = window.WCSite, esc = S.esc;
+      var grid = document.getElementById("grid"), filters = document.getElementById("filters"), strip = document.getElementById("strip");
+      wc.apps().then(function (all) {
+        var apps = all.filter(function (a) { return !a.hidden; });
 
-      // ---------- Icons ----------
-      var s = 'viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
-      var ICONS = {
-        book: '<svg ' + s + '><path d="M24 12c-4-3-10-4-16-3v27c6-1 12 0 16 3 4-3 10-4 16-3V9c-6-1-12 0-16 3z"/><path d="M24 12v27"/></svg>',
-        clay: '<svg ' + s + '><circle cx="24" cy="14" r="7"/><path d="M12 42c0-9 5-16 12-16s12 7 12 16z"/><path d="M21 13h.01M27 13h.01"/></svg>',
-        film: '<svg ' + s + '><rect x="7" y="9" width="34" height="30" rx="3"/><path d="M15 9v30M33 9v30M7 18h8M7 30h8M33 18h8M33 30h8"/></svg>',
-        camera: '<svg ' + s + '><path d="M6 16h8l3-5h14l3 5h8v22H6z"/><circle cx="24" cy="26" r="7"/></svg>',
-        pencil: '<svg ' + s + '><path d="M10 38l4-11 20-20 7 7-20 20z"/><path d="M29 12l7 7"/></svg>',
-        palette: '<svg ' + s + '><path d="M24 7a17 17 0 1 0 0 34c3 0 4-2 3-4s0-5 3-5h5c4 0 6-3 6-7C41 14 33 7 24 7z"/><circle cx="16" cy="20" r="2"/><circle cx="24" cy="15" r="2"/><circle cx="32" cy="20" r="2"/></svg>',
-        puzzle: '<svg ' + s + '><path d="M10 14h8a4 4 0 1 1 8 0h8v8a4 4 0 1 1 0 8v8H26a4 4 0 1 0-8 0h-8V30a4 4 0 1 0 0-8z"/></svg>',
-        sparkle: '<svg ' + s + '><path d="M24 6l4 14 14 4-14 4-4 14-4-14-14-4 14-4z"/></svg>',
-        grid: '<svg ' + s + '><rect x="8" y="8" width="13" height="13" rx="2"/><rect x="27" y="8" width="13" height="13" rx="2"/><rect x="8" y="27" width="13" height="13" rx="2"/><rect x="27" y="27" width="13" height="13" rx="2"/></svg>'
-      };
-      var STATUS = { live: "", beta: "Beta", soon: "Coming soon" };
-
-      function esc(t) { var d = document.createElement("div"); d.textContent = t == null ? "" : String(t); return d.innerHTML; }
-
-      var apps = (window.WC_APPS || []).filter(function (a) { return a && !a.hidden; });
-      var grid = document.getElementById("grid");
-      var filters = document.getElementById("filters");
-      var current = "All";
-
-      function card(a) {
-        var soon = a.status === "soon";
-        var external = /^https?:\/\//.test(a.href || "");
-        var tag = soon ? "div" : "a";
-        var attrs = soon ? ' aria-disabled="true"' : ' href="' + esc(a.href) + '"' + (external ? ' target="_blank" rel="noopener"' : "");
-        var badge = STATUS[a.status] ? '<span class="badge">' + STATUS[a.status] + "</span>" : "";
-        return "<" + tag + ' class="card' + (soon ? " soon" : "") + '"' + attrs + ' style="--c:' + esc(a.color || "#57534e") + '">' +
-          '<div class="band">' + badge + (ICONS[a.icon] || ICONS.sparkle) + "</div>" +
-          '<div class="body">' +
-            "<h3>" + esc(a.name) + "</h3>" +
-            (a.tagline ? '<p class="tagline">' + esc(a.tagline) + "</p>" : "") +
-            (a.description ? '<p class="desc">' + esc(a.description) + "</p>" : "") +
-            (a.note ? '<p class="note">' + esc(a.note) + "</p>" : "") +
-            '<div class="tags">' + (a.tags || []).map(function (t) { return '<span class="tag">' + esc(t) + "</span>"; }).join("") + "</div>" +
-            (soon ? "" : '<span class="open">Open ' + (external ? "&#8599;" : "&rarr;") + "</span>") +
-          "</div></" + tag + ">";
-      }
-
-      function render() {
-        var list = apps.filter(function (a) { return current === "All" || a.kind === current; });
-        var html = list.map(card).join("");
-        if (current === "All") {
-          html += '<div class="card placeholder"><h3>More on the way</h3><p>New tools show up here as they’re built for class.</p></div>';
-        }
-        grid.innerHTML = html || '<p class="empty">Nothing here yet.</p>';
-      }
-
-      var kinds = ["All"].concat(apps.map(function (a) { return a.kind; }).filter(function (k, i, arr) { return k && arr.indexOf(k) === i; }));
-      if (kinds.length > 2) {
-        filters.innerHTML = kinds.map(function (k) {
-          return '<button type="button" class="chip" data-k="' + esc(k) + '" aria-pressed="' + (k === current) + '">' + esc(k === "All" ? "All" : k + "s") + "</button>";
+        strip.innerHTML = apps.map(function (a) {
+          var soon = a.status === "soon";
+          return '<a href="' + (soon ? "#apps" : esc(a.href)) + '" class="' + (soon ? "soon" : "") + '" style="--c:' + esc(a.color) + '"' +
+            (soon ? ' aria-disabled="true" tabindex="-1"' : "") + "><span>" + esc(a.name) + '</span><span class="go" aria-hidden="true">' + (soon ? "" : "&#8599;") + "</span></a>";
         }).join("");
-        filters.addEventListener("click", function (e) {
-          var b = e.target.closest(".chip"); if (!b) return;
-          current = b.dataset.k;
-          [].forEach.call(filters.children, function (c) { c.setAttribute("aria-pressed", c === b); });
-          render();
-        });
-      }
-      render();
+
+        var kinds = [];
+        apps.forEach(function (a) { if (kinds.indexOf(a.kind) < 0) kinds.push(a.kind); });
+        var active = "All";
+        function render() {
+          var shown = apps.filter(function (a) { return active === "All" || a.kind === active; });
+          grid.innerHTML = shown.length ? shown.map(S.card).join("") : '<p class="empty">Nothing here yet.</p>';
+        }
+        if (kinds.length > 1) {
+          filters.innerHTML = ["All"].concat(kinds).map(function (k) {
+            var label = k === "All" ? "All" : k + "s";
+            return '<button class="chip" type="button" data-k="' + esc(k) + '" aria-pressed="' + (k === active) + '">' + esc(label) + "</button>";
+          }).join("");
+          filters.addEventListener("click", function (e) {
+            var b = e.target.closest("button"); if (!b) return;
+            active = b.dataset.k;
+            [].forEach.call(filters.children, function (c) { c.setAttribute("aria-pressed", c === b); });
+            render();
+          });
+        }
+        render();
+      });
     })();
   </script>
 </body>
