@@ -1,4 +1,17 @@
 {
   "topic": "walshclassroom",
-  "apps": []
+  "apps": [
+    {
+      "id": "guide-match",
+      "description": "",
+      "updated": "2026-11-04T14:28:35Z",
+      "manifest": null
+    },
+    {
+      "id": "narrative-studio-2",
+      "description": "Narrative Studio hosting",
+      "updated": "2026-11-04T17:13:04Z",
+      "manifest": null
+    }
+  ]
 }
