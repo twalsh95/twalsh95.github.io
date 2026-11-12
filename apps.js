@@ -134,6 +134,60 @@ window.WC_APPS = [
     }
   },
   {
+    name: "Virtual Claymation Studio",
+    tagline: "Pose clay characters and shoot stop-motion in your browser.",
+    description:
+      "Pose a clay puppet one small move at a time, frame the shot with a real camera, capture each frame, and play it back. Onion skin shows where the last frame was.",
+    href: "/virtual-claymation-studio/",
+    kind: "App",
+    tags: ["Videography", "Animation"],
+    status: "beta",
+    icon: "clay",
+    color: "#F2A541",
+    note: "Early test build. Large download: give it a moment to load the first time.",
+    about: {
+      summary:
+        "Virtual Claymation Studio is a 3D stop-motion studio that runs in the browser. It replaces the logistics of a real-clay unit (lost clay, lost frames, camera mix-ups, inconsistent lighting) so class time goes to the skills that carry into video: frames, timing, framing, and telling a story in images. I'm building it for the opening unit of my Videography course.",
+      students: [
+        "Pose a clay puppet with Bend, Twist, Move, Lift, and Squash, in small increments.",
+        "Frame the shot through a locked shot camera, using real camera moves: pan and tilt, truck and pedestal, dolly, and zoom with a lens readout.",
+        "Capture a frame, adjust the pose, capture again. Onion skin shows the last one or three frames as ghosts.",
+        "Play the sequence back at a chosen frame rate, then export the frames for editing in Premiere."
+      ],
+      classroom: [
+        "The planned unit runs about 15 class days: tutorial levels, pre-production, a final project, and a screening with critique.",
+        "Tutorial levels pair a stop-motion skill with a video skill (frame rate, timing, shot sizes, lighting, cutting), and hand more of the story to the student as they go.",
+        "The final project brief is simple: there needs to be a character, and something needs to happen to that character."
+      ],
+      details: {
+        "Best for": "Videography, animation, intro to video",
+        "Sign-in": "None yet. Accounts and cloud saves are planned.",
+        "Status": "Early test build. Tutorial levels are in development.",
+        "Devices": "A laptop with a mouse and keyboard. Chromebooks may need the site allowed by IT."
+      },
+      todo: [
+        "Screenshots of posing and the shot camera",
+        "The tutorial levels, once they're built",
+        "Unit materials: vocabulary, rubric, and standards"
+      ]
+    },
+    help: {
+      steps: [
+        "Open Virtual Claymation Studio and wait for it to load. The first load takes the longest.",
+        "Pick a tool (Bend, Twist, Move, Lift, or Squash), then click a part of the puppet and drag to pose it.",
+        "Switch to Camera View to see exactly what the shot camera will capture.",
+        "Press Capture Frame (or the space bar) to save a frame, make a small change, and capture again.",
+        "Press Play to watch your animation."
+      ],
+      faq: [
+        { q: "It's stuck loading.", a: "The studio is a big download. Give it up to a minute on school wifi. If it still won't load, refresh the page." },
+        { q: "My puppet jumps between frames.", a: "Make smaller changes between captures, and turn on onion skin so you can see where the last frame was." },
+        { q: "I captured a frame by mistake.", a: "Use Delete Last Frame. Undo only works on posing, not on captured frames." },
+        { q: "Does my project save?", a: "This is an early test version. Use Save Project before you leave, and ask your teacher where to keep the file." }
+      ]
+    }
+  },
+  {
     // Live at walshclassroom.com/triton-alumni-portal/ but not shown anywhere on the hub.
     name: "Triton Alumni Portal",
     href: "/triton-alumni-portal/",
@@ -141,17 +195,4 @@ window.WC_APPS = [
     hidden: true
   }
 
-  /* Example of an upcoming app. Remove the slashes and stars around it to show it.
-  ,{
-    name: "Virtual Claymation Studio",
-    tagline: "Pose clay characters and shoot stop-motion in your browser.",
-    description: "Build a clay character, pose it frame by frame, light the set, and export an image sequence for Premiere.",
-    href: "/virtual-claymation-studio/",
-    kind: "App",
-    tags: ["Videography", "Animation"],
-    status: "soon",
-    icon: "clay",
-    color: "#0B5874"
-  }
-  */
 ];
