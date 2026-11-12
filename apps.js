@@ -61,13 +61,13 @@ window.WC_APPS = [
       details: {
         "Best for": "Screenwriting, creative writing, pre-production",
         "Sign-in": "Email and password. Students make their own account.",
+        "Teacher account": "Ask for an invite code at help@walshclassroom.com",
         "Saves": "Automatically, to the student's account",
         "Devices": "Any modern browser. Chromebooks are fine."
       },
       todo: [
         "Screenshots of the Writing Desk and the beat board",
-        "A sample lesson or assignment that uses it",
-        "How a teacher gets a teacher account today (invite code from Tom)"
+        "One sample lesson or assignment that uses it"
       ]
     },
     help: {
@@ -110,14 +110,15 @@ window.WC_APPS = [
       ],
       details: {
         "Best for": "Photography, composition, visual literacy",
+        "Class time": "15 to 20 minutes. Students who know the material finish faster.",
         "Guides": "Rule of Thirds, Leading lines, Framing, Symmetry",
         "Sign-in": "None",
         "Saves": "Nothing is saved or sent anywhere",
         "Devices": "Any browser. Tap works as well as drag."
       },
-      todo: [
-        "How long a round usually takes in class",
-        "A screenshot of a finished round"
+      shots: [
+        { src: "/assets/shots/guide-match-1.jpg", h: 664, alt: "Guide Match, level 1: a lake photo beside four guide tiles: Leading lines, Symmetry, Rule of Thirds and Framing.", caption: "Level 1: pick the guide that fits the photo." },
+        { src: "/assets/shots/guide-match-2.jpg", h: 664, alt: "Guide Match, levels 2 and 3: a symmetry line sits on the lake's waterline, with four clues to choose from.", caption: "Levels 2 and 3: the symmetry line fitted to the waterline, then the clue that proves it." }
       ]
     },
     help: {
@@ -152,6 +153,7 @@ window.WC_APPS = [
         "Pose a clay puppet with Bend, Twist, Move, Lift, and Squash, in small increments.",
         "Frame the shot through a locked shot camera, using real camera moves: pan and tilt, truck and pedestal, dolly, and zoom with a lens readout.",
         "Capture a frame, adjust the pose, capture again. Onion skin shows the last one or three frames as ghosts.",
+        "Change the angle with + New Shot. Each shot is its own camera setup, and it picks up where the last shot left off, so students practice cutting between angles.",
         "Play the sequence back at a chosen frame rate, then export the frames for editing in Premiere."
       ],
       classroom: [
@@ -165,10 +167,13 @@ window.WC_APPS = [
         "Status": "Early test build. Tutorial levels are in development.",
         "Devices": "A laptop with a mouse and keyboard. Chromebooks may need the site allowed by IT."
       },
+      shots: [
+        { src: "/assets/shots/claymation-1.jpg", alt: "Virtual Claymation Studio in Studio View: a clay kid on a stage, the tool bar on top, the shot camera's preview at right, and the Shots row with + New Shot at the bottom.", caption: "Studio View: pose the puppet. The panel at right shows what the shot camera will capture." },
+        { src: "/assets/shots/claymation-2.jpg", alt: "Virtual Claymation Studio in Camera View: the clay kid seen through the shot camera, with Capture Frame, playback and onion skin controls.", caption: "Camera View: look through the shot camera, then Capture Frame." }
+      ],
       todo: [
-        "Screenshots of posing and the shot camera",
         "The tutorial levels, once they're built",
-        "Unit materials: vocabulary, rubric, and standards"
+        "Unit materials (vocabulary, rubric, standards). They'll go on this page once they're made."
       ]
     },
     help: {
@@ -177,6 +182,7 @@ window.WC_APPS = [
         "Pick a tool (Bend, Twist, Move, Lift, or Squash), then click a part of the puppet and drag to pose it.",
         "Switch to Camera View to see exactly what the shot camera will capture.",
         "Press Capture Frame (or the space bar) to save a frame, make a small change, and capture again.",
+        "Want a new camera angle? Click + New Shot in the Shots row at the bottom. The new shot picks up exactly where the last one left off, so the action carries across the cut.",
         "Press Play to watch your animation."
       ],
       faq: [

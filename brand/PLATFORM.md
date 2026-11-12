@@ -35,7 +35,7 @@ This was chosen over wrapping apps in an iframe, which would break deep links, f
 
 ### Roles
 - Each user has a `users/{uid}` document with `role: student | teacher | admin`. Firestore rules stop users from setting their own role.
-- **Teacher accounts:** someone requests teacher access, and an admin (Tom) approves it. This needs no paid plan or Cloud Functions.
+- **Teacher accounts:** an account whose email ends in `.org` or `.edu` becomes a teacher on sign-up, once it has confirmed the email (Firebase sends a link, and `email_verified` must be true). The Firestore rules enforce this from the sign-in token (`request.auth.token.email` and `request.auth.token.email_verified`), so the app alone can't grant it. Anyone else (another domain, or a student account that needs teacher tools) gets an invite code from Tom, who asks at help@walshclassroom.com. Students at ACS have `.charter` emails, so they don't match. Accepted risk: some schools give students `.org` or `.edu` addresses; Tom can demote an account from the admin panel. This needs no paid plan or Cloud Functions.
 - **Student accounts:** students sign up with email and password and join a class with a join code.
 
 ### Data model (sketch)
@@ -59,15 +59,20 @@ The code of every app is public on GitHub Pages; only listing and data access ca
 
 ## Build phases
 1. New design: landing page, explainers, student help, `wc.js` (nav bar only), app-list automation.
-2. Platform accounts: sign-in on the hub, the bar shows the user, and Narrative Studio moves to the platform sign-in.
-3. Roles and classes: teacher approval, class creation, join codes, the student and teacher views.
+2. Platform accounts: sign-in on the hub, the bar shows the user, Narrative Studio moves to the platform sign-in, and teacher accounts from verified `.org`/`.edu` emails (plus invite codes for everyone else). Needs Tom's current Firestore rules from the Firebase console.
+3. Roles and classes: class creation, join codes, the student and teacher views, and the admin mail feature (below).
 4. Assignments and the teacher's read-only view of student work, app by app.
 
 ## Locked (Tom, Nov 5 2026)
 - The platform uses **Narrative Studio's Firebase project**, so existing accounts and work carry over.
-- **Teacher access:** someone requests it, and Tom (admin) approves.
+- **Teacher access** (changed Nov 12 2026): verified `.org` and `.edu` emails become teachers on sign-up; everyone else uses an invite code from Tom.
 - **Student accounts:** students sign up themselves, then join a class with a class code.
 - The architecture above is accepted.
+
+## Email
+- **help@walshclassroom.com** forwards to Tom's inbox through Cloudflare Email Routing (free). It's listed on the Teachers page. Setup is Tom's, in the Cloudflare dashboard.
+- **Outgoing mail, first step (no code):** add help@walshclassroom.com as a "Send mail as" address in Gmail, using the SMTP server of a free email-sending service (Brevo or Resend). Cloudflare only receives mail; it can't send it. The service has Tom add a few DNS records in Cloudflare so the mail isn't marked as spam.
+- **Admin mail feature (Phase 3):** a Send email panel for admin accounts in the hub. The page can't send mail on its own, so it calls a small Cloudflare Worker (free tier) that checks the Firebase sign-in token is an admin's, then sends through the same email service's API. Uses: replying to help requests, sending teacher invite codes, class announcements. Never sends to students without a reason a school would sign off on (check with ACS first).
 
 ## Still to check
 - Check with ACS whether a student data privacy agreement is needed once other teachers' students sign up.
