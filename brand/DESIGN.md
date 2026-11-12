@@ -27,11 +27,12 @@ Clean and modern with a little quirk. Committed color and hard contrast, with no
 App colors match each app's own design: Narrative Studio `#52B788`, Guide Match `#FF7A3D`.
 
 ## Components
-- **Hero:** ink (near-black) block, white Unbounded headline, second line in violet. A full-width app color strip along the bottom; each segment opens its app.
+- **Hero:** ink (near-black) block, white Unbounded headline, second line in violet. A full-width category strip along the bottom: one block per category (Studios, Games, Tools) in the category color, each jumping to its bin on the page. Apps keep their own colors on their cards.
 - **Wordmark lockup:** solid "WC" square joined to an outlined "Walsh Classroom" box.
 - **Borders:** 1.5px solid ink. Square corners throughout; no pills, no hairlines.
 - **App cards:** full app-color block on top with initials in Unbounded, a 1.5px ink rule under it, title in Young Serif, short description, category label, and a solid ink "Open" button.
 - **Buttons and active filters:** solid ink blocks.
+- **Category bins:** the app grid is grouped by category. Each bin has a 10px bar in the category color, a heading, and a one-line blurb. Category colors live in `WC_CATEGORIES` in apps.js: Studios #8F7EF2, Games #E05A93, Tools #3BA3C2.
 - **Status badges:** Beta / Coming soon. No standing "More on the way" tile.
 - **Line icons:** kept.
 - **Hover:** slight lift; none with reduced motion.

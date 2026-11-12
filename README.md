@@ -17,11 +17,11 @@ This repo is named `twalsh95.github.io`, which makes it your GitHub **user site*
 ## Files
 
 ```
-index.html             Home page: the hero, the app strip, and the app cards
+index.html             Home page: the hero, the category strip, and the app cards in category bins
 teachers/              "For teachers": index.html lists the explainers; one page per app at teachers/<id>/
 help/                  Student help: general FAQ plus a section for each app
 404.html               "This scene didn't make the final cut."
-apps.js                YOUR OVERRIDES for the app list, plus each app's explainer and help text
+apps.js                YOUR OVERRIDES for the app list, each app's explainer and help text, and the categories
 data/repos.json        The automatic app list (rebuilt by GitHub every day; don't edit by hand)
 platform/wc.js         The Walsh Classroom bar for apps, and the app-list loader
 assets/wc.css          Shared styles (colors, type, components)

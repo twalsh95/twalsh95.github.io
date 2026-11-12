@@ -122,8 +122,8 @@ h1, h2, h3 { margin: 0; }
 .strip a:last-child { border-right: 0; }
 .strip a:hover, .strip a:focus-visible { flex-grow: 1.6; }
 .strip a span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.strip a .count { font: 800 12px/1 var(--display); background: #0B0B0C; color: var(--c); padding: 5px 7px; flex: none; }
 .strip a .go { margin-left: auto; font-family: var(--body); font-size: 20px; }
-.strip a.soon { pointer-events: none; background: repeating-linear-gradient(-45deg, var(--c) 0 10px, #0B0B0C 10px 12px); }
 @media (max-width: 560px) { .strip { flex-direction: column; } .strip a { border-right: 0; border-bottom: 1.5px solid #0B0B0C; } .strip a:last-child { border-bottom: 0; } }
 
 /* ---------- Sections ---------- */
@@ -147,6 +147,17 @@ h1, h2, h3 { margin: 0; }
 .card .desc { margin: 0; color: var(--ink-2); font-size: 16px; }
 .card .meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
 .card .meta .kind { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
+.card .meta .kind[style] { background: var(--k); border-color: var(--k); color: #0B0B0C; }
+
+/* ---------- Category bins ---------- */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.bin { scroll-margin-top: 88px; }
+.bin + .bin { margin-top: clamp(48px, 7vw, 80px); }
+.bin-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 20px; margin-bottom: 24px;
+  border-top: 10px solid var(--k); padding-top: 16px; }
+.bin-head h2 { font-size: clamp(28px, 4vw, 44px); }
+.bin-head p { margin: 0; color: var(--ink-2); font-weight: 700; }
+.bin:target .bin-head h2 { text-decoration: underline; text-decoration-color: var(--k); text-decoration-thickness: 6px; text-underline-offset: 8px; }
 .card .note { font-size: 14px; color: var(--ink-2); margin: 0; }
 .card .actions { display: flex; gap: 8px; margin-top: auto; padding-top: 8px; }
 .card .actions .btn { flex: 1; }

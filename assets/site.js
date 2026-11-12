@@ -82,7 +82,7 @@
       '<div class="body"><h3>' + esc(a.name) + "</h3>" +
       (a.tagline ? '<p class="tagline">' + esc(a.tagline) + "</p>" : "") +
       (a.description && a.description !== a.tagline ? '<p class="desc">' + esc(a.description) + "</p>" : "") +
-      '<div class="meta"><span class="badge kind">' + esc(a.kind) + "</span>" + tags + "</div>" +
+      '<div class="meta"><span class="badge kind"' + (a.kindColor ? ' style="--k:' + esc(a.kindColor) + '"' : "") + ">" + esc(a.kind) + "</span>" + tags + "</div>" +
       (a.note ? '<p class="note">' + esc(a.note) + "</p>" : "") +
       '<div class="actions">' + open + about + "</div></div></article>";
   }

@@ -20,7 +20,7 @@
     tagline     One short line under the title.
     description Two or three sentences. Plain language for students.
     href        Where Open goes. A repo with Pages on is "/<repo-name>/". Anything else: "https://...".
-    kind        "App", "Game", or "Tool". Drives the filter buttons.
+    kind        Which bin the app goes in: "Studio", "Game", or "Tool" (see WC_CATEGORIES at the bottom).
     tags        Short labels: classes, skills.
     status      "live", "beta" (works, still changing), or "soon" (not clickable yet).
     icon        book, clay, film, camera, pencil, palette, puzzle, sparkle, grid
@@ -38,7 +38,7 @@ window.WC_APPS = [
     description:
       "A writing workspace for stories and screenplays. Build characters, locations, scenes, and your world, arrange an outline, then write in a story or screenplay editor.",
     href: "/narrative-studio-2/",
-    kind: "App",
+    kind: "Studio",
     tags: ["Writing", "Screenwriting"],
     status: "live",
     icon: "book",
@@ -139,7 +139,7 @@ window.WC_APPS = [
     description:
       "Pose a clay puppet one small move at a time, frame the shot with a real camera, capture each frame, and play it back. Onion skin shows where the last frame was.",
     href: "/virtual-claymation-studio/",
-    kind: "App",
+    kind: "Studio",
     tags: ["Videography", "Animation"],
     status: "beta",
     icon: "clay",
@@ -195,4 +195,15 @@ window.WC_APPS = [
     hidden: true
   }
 
+];
+
+/*
+  THE CATEGORIES (the bins on the home page, and the color strip in the hero).
+  Each app's "kind" picks its bin. Bins show in this order, and only when they have an app in them.
+  The colors here are the category's color. Each app keeps its own color on its card.
+*/
+window.WC_CATEGORIES = [
+  { kind: "Studio", label: "Studios", color: "#8F7EF2", blurb: "Make something from start to finish." },
+  { kind: "Game",   label: "Games",   color: "#E05A93", blurb: "Practice one skill, fast." },
+  { kind: "Tool",   label: "Tools",   color: "#3BA3C2", blurb: "Quick help with one job." }
 ];

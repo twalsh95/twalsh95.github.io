@@ -26,16 +26,13 @@
         </div>
         <div class="hero-mark" aria-hidden="true"><span class="mark"></span></div>
       </div>
-      <nav class="strip" id="strip" aria-label="Open an app"></nav>
+      <nav class="strip" id="strip" aria-label="Jump to a category"></nav>
     </section>
 
     <section class="section band" id="apps" aria-labelledby="apps-title">
       <div class="wrap">
-        <div class="section-head">
-          <h2 class="display" id="apps-title">Pick a tool.</h2>
-          <div class="chips" id="filters" role="group" aria-label="Filter by type"></div>
-        </div>
-        <div class="grid" id="grid" aria-live="polite"></div>
+        <h2 class="display sr-only" id="apps-title">All the apps</h2>
+        <div id="bins"></div>
       </div>
     </section>
 
@@ -64,36 +61,43 @@
   <script>
     (function () {
       var S = window.WCSite, esc = S.esc;
-      var grid = document.getElementById("grid"), filters = document.getElementById("filters"), strip = document.getElementById("strip");
+      var binsEl = document.getElementById("bins"), strip = document.getElementById("strip");
+      var FALLBACK = ["#3DB487", "#E5784F", "#BDBDC4"];
+      function slug(t) { return String(t).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
+
       wc.apps().then(function (all) {
         var apps = all.filter(function (a) { return !a.hidden; });
 
-        strip.innerHTML = apps.map(function (a) {
-          var soon = a.status === "soon";
-          return '<a href="' + (soon ? "#apps" : esc(a.href)) + '" class="' + (soon ? "soon" : "") + '" style="--c:' + esc(a.color) + '"' +
-            (soon ? ' aria-disabled="true" tabindex="-1"' : "") + "><span>" + esc(a.name) + '</span><span class="go" aria-hidden="true">' + (soon ? "" : "&#8599;") + "</span></a>";
+        // Categories from apps.js, in that order, then any kind that isn't listed there.
+        var cats = (window.WC_CATEGORIES || []).map(function (c) { return Object.assign({}, c); });
+        apps.forEach(function (a) {
+          if (!cats.some(function (c) { return c.kind === a.kind; })) {
+            cats.push({ kind: a.kind, label: a.kind + "s", color: FALLBACK[(cats.length) % FALLBACK.length] });
+          }
+        });
+        cats.forEach(function (c) {
+          c.id = slug(c.label);
+          c.apps = apps.filter(function (a) { return a.kind === c.kind; });
+          c.apps.forEach(function (a) { a.kindColor = c.color; });
+        });
+        cats = cats.filter(function (c) { return c.apps.length; });
+
+        // Hero strip: one block per category; each jumps to its bin.
+        strip.innerHTML = cats.map(function (c) {
+          return '<a href="#' + c.id + '" style="--c:' + esc(c.color) + '"><span>' + esc(c.label) +
+            '</span><span class="count" aria-label="' + c.apps.length + ' apps">' + c.apps.length + '</span><span class="go" aria-hidden="true">&#8595;</span></a>';
         }).join("");
 
-        var kinds = [];
-        apps.forEach(function (a) { if (kinds.indexOf(a.kind) < 0) kinds.push(a.kind); });
-        var active = "All";
-        function render() {
-          var shown = apps.filter(function (a) { return active === "All" || a.kind === active; });
-          grid.innerHTML = shown.length ? shown.map(S.card).join("") : '<p class="empty">Nothing here yet.</p>';
-        }
-        if (kinds.length > 1) {
-          filters.innerHTML = ["All"].concat(kinds).map(function (k) {
-            var label = k === "All" ? "All" : k + "s";
-            return '<button class="chip" type="button" data-k="' + esc(k) + '" aria-pressed="' + (k === active) + '">' + esc(label) + "</button>";
-          }).join("");
-          filters.addEventListener("click", function (e) {
-            var b = e.target.closest("button"); if (!b) return;
-            active = b.dataset.k;
-            [].forEach.call(filters.children, function (c) { c.setAttribute("aria-pressed", c === b); });
-            render();
-          });
-        }
-        render();
+        // Bins
+        binsEl.innerHTML = cats.map(function (c) {
+          return '<section class="bin" id="' + c.id + '" style="--k:' + esc(c.color) + '" aria-labelledby="' + c.id + '-t">' +
+            '<div class="bin-head"><h2 class="display" id="' + c.id + '-t">' + esc(c.label) + "</h2>" +
+            (c.blurb ? "<p>" + esc(c.blurb) + "</p>" : "") + "</div>" +
+            '<div class="grid">' + c.apps.map(S.card).join("") + "</div></section>";
+        }).join("") || '<p class="empty">Nothing here yet.</p>';
+
+        // Arriving with #studios etc. in the address: jump there once the bins exist.
+        if (location.hash) { var t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); }
       });
     })();
   </script>
