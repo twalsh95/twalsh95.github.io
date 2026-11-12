@@ -1,6 +1,6 @@
 # Walsh Classroom design decisions
 
-Working record from the design pass (Nov 2026). Not built yet.
+Working record from the design pass (Nov 2026). The full brand guide (tokens, logo rules, components, voice) is the Walsh Classroom design system: https://claude.ai/artifact/5XgMEsDNj5RAhG1GU3Exor . When the two disagree, update both.
 
 ## Direction
 Clean and modern with a little quirk. Committed color and hard contrast, with no pastels and no
@@ -39,9 +39,10 @@ App colors match each app's own design: Narrative Studio `#52B788`, Guide Match 
 - **Theme:** follows the device, with a toggle that remembers the choice.
 
 ## Logo
-- Primary: wordmark lockup combined with the beard mark (to design).
-- Secondary: beard and glasses mark (`logo-original.svg`). The glasses need redrawing as vector, and the file needs optimizing.
-- Favicon: simplified beard mark, with light and dark versions.
+- Primary: the lockup (violet beard square joined to the boxed "WALSH CLASSROOM" in Unbounded 800), outlined: `assets/logo/walsh-classroom-logo.svg`, `-dark`, `-solid`.
+- Tile: `walsh-classroom-tile.svg` and `-dark` for avatars and app icons.
+- Secondary: the beard mark, redrawn as one-color vector with the strands cut out: `beard-mark-ink.svg`, `-white`, `-violet`; `beard-mark-simple.svg` below 48px.
+- Favicon: `favicon.svg`, the simple mark on a violet tile, switching for dark mode.
 
 ## Copy
 - 404: "This scene didn't make the final cut," with the mascot.

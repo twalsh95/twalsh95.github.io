@@ -45,6 +45,7 @@ body {
 img, svg { display: block; max-width: 100%; }
 a { color: inherit; }
 :focus-visible { outline: 3px solid var(--violet); outline-offset: 3px; }
+.hero :focus-visible { outline-color: #FFFFFF; }
 .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gutter); }
 .skip { position: absolute; left: -999px; top: 8px; background: var(--ink); color: var(--on-ink); padding: 8px 12px; z-index: 50; }
 .skip:focus { left: 8px; }
