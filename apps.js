@@ -143,7 +143,7 @@ window.WC_APPS = [
     tags: ["Videography", "Animation"],
     status: "beta",
     icon: "clay",
-    color: "#F2A541",
+    color: "#4A6FE3",
     note: "Early test build. Large download: give it a moment to load the first time.",
     about: {
       summary:
