@@ -20,7 +20,7 @@
     tagline     One short line under the title.
     description Two or three sentences. Plain language for students.
     href        Where Open goes. A repo with Pages on is "/<repo-name>/". Anything else: "https://...".
-    kind        Which bin the app goes in: "Studio", "Game", or "Tool" (see WC_CATEGORIES at the bottom).
+    kind        Which bin the app goes in: "Studio", "Game", "Tool", or "Material" (see WC_CATEGORIES at the bottom).
     tags        Short labels: classes, skills.
     status      "live", "beta" (works, still changing), or "soon" (not clickable yet).
     icon        book, clay, film, camera, pencil, palette, puzzle, sparkle, grid
@@ -110,12 +110,12 @@ window.WC_APPS = [
       ],
       details: {
         "Best for": "Photography, composition, visual literacy",
+        "Guides": "Rule of Thirds, Leading lines, Framing, Symmetry",
         "Sign-in": "None",
         "Saves": "Nothing is saved or sent anywhere",
         "Devices": "Any browser. Tap works as well as drag."
       },
       todo: [
-        "Which composition guides are in the game",
         "How long a round usually takes in class",
         "A screenshot of a finished round"
       ]
@@ -188,6 +188,20 @@ window.WC_APPS = [
     }
   },
   {
+    // The page is premiere_cheatsheet.html, not index.html, so href points at the file.
+    id: "premiere-cheat-sheet",
+    name: "Premiere Podcast Editing",
+    tagline: "Sync your cameras and audio, step by step.",
+    description:
+      "A two-page cheat sheet for the podcast final project: start a Premiere project, import your folder, mark the clap, then sync every camera to the audio.",
+    href: "/premiere-cheat-sheet/premiere_cheatsheet.html",
+    kind: "Material",
+    tags: ["Podcasting", "Premiere Pro"],
+    status: "live",
+    icon: "film",
+    color: "#3A7FC2"
+  },
+  {
     // Live at walshclassroom.com/triton-alumni-portal/ but not shown anywhere on the hub.
     name: "Triton Alumni Portal",
     href: "/triton-alumni-portal/",
@@ -205,5 +219,6 @@ window.WC_APPS = [
 window.WC_CATEGORIES = [
   { kind: "Studio", label: "Studios", color: "#8F7EF2", blurb: "Make something from start to finish." },
   { kind: "Game",   label: "Games",   color: "#E05A93", blurb: "Practice one skill, fast." },
-  { kind: "Tool",   label: "Tools",   color: "#3BA3C2", blurb: "Quick help with one job." }
+  { kind: "Tool",   label: "Tools",   color: "#3BA3C2", blurb: "Quick help with one job." },
+  { kind: "Material", label: "Classroom materials", color: "#3DB487", blurb: "Handouts and references to keep open while you work." }
 ];
