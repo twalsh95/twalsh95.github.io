@@ -14,6 +14,81 @@
       "manifest": null
     },
     {
+      "id": "premiere-basics",
+      "description": "",
+      "updated": "2026-11-13T12:43:42Z",
+      "manifest": {
+        "name": "Premiere Basics Missions",
+        "kind": "Material",
+        "icon": "film",
+        "color": "#F2A93B",
+        "status": "live",
+        "tags": [
+          "Videography",
+          "Premiere Pro"
+        ],
+        "tagline": "Work a Premiere mission one step at a time.",
+        "description": "Ten short Premiere Pro missions, from setup to titles. Read a step, do it, check your screen, then move on. Keep it open next to Premiere.",
+        "about": {
+          "summary": "Premiere Basics Missions turns my Premiere Pro mission cards into a step-by-step player. Students see one step at a time, do it, then compare their screen to a Check line before they move on. Each mission ends with a Show Me checklist, and a Stuck? panel is always one click away.",
+          "students": [
+            "Open a mission and work it one step at a time: read it, do it, check it.",
+            "When a step offers Way A and Way B, pick one. The app hides the others.",
+            "Switch to the full card to see every step on one page, or print a paper copy.",
+            "Open Stuck? for quick fixes, the Mac keys cheat sheet, and what to do about Media Offline.",
+            "Finish with the Show Me checklist, then ask for initials."
+          ],
+          "classroom": [
+            "Progress saves only in each student's own browser. There is no sign-in and no student data.",
+            "My initials on the paper mission card stay the record of completion. The app is the student's own tracker, not a grade or a submission.",
+            "You can link straight to a mission from Google Classroom, for example walshclassroom.com/premiere-basics/#/m/5.",
+            "Back on Track is a short lesson on how to work a mission. It can be projected or read alone."
+          ],
+          "details": {
+            "Best for": "Videography, Premiere Pro basics",
+            "Sign-in": "None",
+            "Saves": "In the student's own browser only",
+            "Devices": "A MacBook with Premiere Pro. Works side by side with Premiere in a half-width window."
+          },
+          "todo": [
+            "Premiere screenshots for the steps that need them",
+            "A short note on how I use it in class"
+          ]
+        },
+        "help": {
+          "steps": [
+            "Open Premiere Basics Missions and keep the window next to Premiere.",
+            "Pick your mission, or press Continue to go back to your last step.",
+            "Read one step. Do only that step. Press I did it.",
+            "Look at the Check line. If your screen matches, press My screen matches.",
+            "After the last step, open Show Me. Point to each item on your screen, then ask for initials."
+          ],
+          "faq": [
+            {
+              "q": "My progress disappeared.",
+              "a": "Progress is saved in the browser on one computer. If you switched computers or the browser was cleared, it will be gone. Next time, open Save or load my progress and copy your progress code, then paste it on the new computer."
+            },
+            {
+              "q": "What is Show Me?",
+              "a": "It is the checklist at the end of a mission. When you can point to every item on your screen, ask for initials on your mission card."
+            },
+            {
+              "q": "Does the app turn in my work?",
+              "a": "No. It only tracks your steps for you. Your initials on your mission card are the official record."
+            },
+            {
+              "q": "My screen does not match the step.",
+              "a": "Press Command + Z to undo, then read the step again. If you are still stuck, press Stuck? at the top."
+            },
+            {
+              "q": "Who do I ask for help?",
+              "a": "Ask a neighbor first. Show them your screen and the step. Then ask Mr. Walsh, and say which step you are on and what you see."
+            }
+          ]
+        }
+      }
+    },
+    {
       "id": "virtual-claymation-studio",
       "description": "3D virtual claymation studio with a gamified stop-motion tutorial, built in Godot",
       "updated": "2026-11-13T00:07:11Z",
