@@ -54,6 +54,9 @@ window.WC_APPS = [
         "Write the draft at the Writing Desk."
       ],
       classroom: [
+        "Use it for any screenwriting lesson. Each tool can carry its own: Characters for character development, the Outline and Beat Board for three-act structure, Scenes for scene building, and World Building for setting and story rules.",
+        "The Writing Desk does the job of screenwriting software like Final Draft. Students write in proper screenplay format in the browser, with nothing to install.",
+        "For a final project, students take one story through every part of the studio, from characters and outline to a finished scene or short screenplay.",
         "Students join your class with a class code.",
         "You can open a student's project in a read-only view, comment on specific passages, and leave written feedback.",
         "Students can reply to your comments inside the app."
@@ -69,9 +72,7 @@ window.WC_APPS = [
         { src: "/assets/shots/narrative-studio-1.jpg", w: 800, h: 512, alt: "Narrative Studio's Beat Board for a sample short film, The Last Bus: twelve story beats in a grid, from the opening to the resolution.", caption: "The Beat Board: the outline as cards, ready to drag into order." },
         { src: "/assets/shots/narrative-studio-2.jpg", w: 800, h: 512, alt: "Narrative Studio's Writing Desk: the first scene of The Last Bus in screenplay format, with a scene heading, action, character names and dialogue.", caption: "The Writing Desk in screenplay mode. Line types (scene heading, action, character, dialogue) are one click or a Tab away." }
       ],
-      todo: [
-        "One sample lesson or assignment that uses it"
-      ]
+      todo: []
     },
     help: {
       steps: [
