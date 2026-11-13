@@ -65,8 +65,11 @@ window.WC_APPS = [
         "Saves": "Automatically, to the student's account",
         "Devices": "Any modern browser. Chromebooks are fine."
       },
+      shots: [
+        { src: "/assets/shots/narrative-studio-1.jpg", w: 800, h: 512, alt: "Narrative Studio's Beat Board for a sample short film, The Last Bus: twelve story beats in a grid, from the opening to the resolution.", caption: "The Beat Board: the outline as cards, ready to drag into order." },
+        { src: "/assets/shots/narrative-studio-2.jpg", w: 800, h: 512, alt: "Narrative Studio's Writing Desk: the first scene of The Last Bus in screenplay format, with a scene heading, action, character names and dialogue.", caption: "The Writing Desk in screenplay mode. Line types (scene heading, action, character, dialogue) are one click or a Tab away." }
+      ],
       todo: [
-        "Screenshots of the Writing Desk and the beat board",
         "One sample lesson or assignment that uses it"
       ]
     },

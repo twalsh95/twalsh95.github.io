@@ -32,7 +32,7 @@
       "<h2>What it is</h2><p>" + esc(ab.summary) + "</p>" +
       (ab.students ? "<h2>What students do</h2>" + list(ab.students, "ol") : "") +
       (ab.shots && ab.shots.length ? "<h2>What it looks like</h2>" + ab.shots.map(function (s) {
-        return '<figure class="shot"><img src="' + esc(s.src) + '" alt="' + esc(s.alt) + '" loading="lazy" width="1280" height="' + esc(s.h || 760) + '">' +
+        return '<figure class="shot"><img src="' + esc(s.src) + '" alt="' + esc(s.alt) + '" loading="lazy" width="' + esc(s.w || 1280) + '" height="' + esc(s.h || 760) + '">' +
           (s.caption ? "<figcaption>" + esc(s.caption) + "</figcaption>" : "") + "</figure>";
       }).join("") : "") +
       (ab.classroom ? "<h2>Using it in class</h2>" + list(ab.classroom, "ul") : "") +
