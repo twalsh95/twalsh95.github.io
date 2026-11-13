@@ -34,14 +34,14 @@ Because the script lives in the hub repo, a fix there updates every app at once.
 This was chosen over wrapping apps in an iframe, which would break deep links, fullscreen and mobile layout.
 
 ### Roles
-- Each user has a `users/{uid}` document with `role: student | teacher | admin`. Firestore rules stop users from setting their own role.
+- Each user has a profile at `users/{uid}/profile/main` (the one Narrative Studio already kept) with `role: student | teacher`, plus `isAdmin` and `isMaster` flags. The Firestore rules (`platform/firestore.rules`) stop anyone setting their own role; Tom's account is the master, by account ID.
 - **Teacher accounts:** an account whose email ends in `.org` or `.edu` becomes a teacher on sign-up, once it has confirmed the email (Firebase sends a link, and `email_verified` must be true). The Firestore rules enforce this from the sign-in token (`request.auth.token.email` and `request.auth.token.email_verified`), so the app alone can't grant it. Anyone else (another domain, or a student account that needs teacher tools) gets an invite code from Tom, who asks at help@walshclassroom.com. Students at ACS have `.charter` emails, so they don't match. Accepted risk: some schools give students `.org` or `.edu` addresses; Tom can demote an account from the admin panel. This needs no paid plan or Cloud Functions.
 - **Student accounts:** students sign up with email and password and join a class with a join code.
 
 ### Data model (sketch)
 | Collection | Contents |
 |---|---|
-| `users/{uid}` | name, email, role |
+| `users/{uid}/profile/main` | name, email, role, isAdmin, isMaster |
 | `classes/{id}` | name, teacherUids, joinCode, studentUids |
 | `assignments/{id}` | classId, appId, title, instructions, due date, optional activity link |
 | `apps/{appId}/work/{docId}` | ownerUid, classIds, plus app-specific data |
@@ -77,8 +77,17 @@ The code of every app is public on GitHub Pages; only listing and data access ca
 ## Still to check
 - Check with ACS whether a student data privacy agreement is needed once other teachers' students sign up.
 
-## Phase 1: built (Nov 5 2026, not yet published)
+## Phase 1: built (Nov 5 2026, published)
 - Hub pages: `/` (apps), `/teachers/` and `/teachers/<id>/` (explainers), `/help/` (student FAQ and per-app help), and `404.html`.
 - `platform/wc.js` draws the bar and provides `wc.apps()`, `wc.app(id)` and `wc.current()`.
 - The app list comes from `data/repos.json` (built daily by `.github/workflows/app-list.yml` from repos tagged `walshclassroom`) merged with `apps.js`, where `apps.js` wins.
 - Note for Phase 2+: Narrative Studio already has class codes, teacher invite codes (`T-XXXX-XXXX`), a read-only teacher view and passage comments. The platform's class model should take over from these features, not run alongside them.
+
+## Phase 2: built (Nov 12-13 2026, live)
+- `/account/`: log in, make an account, reset a password, and a signed-in view (name, email, Student/Teacher/Admin). It sends people back to the page they came from (`?next=`).
+- A Log in button in the hub header, and a Log in link (the person's name, once signed in) in the bar inside every app.
+- `platform/auth.js`, loaded on demand by `wc.js`: `wc.user()`, `wc.role()`, `wc.onAuth()`, `wc.signOut()`, `wc.signInUrl()`. It reuses the page's Firebase app and reads the role over Firestore's REST API, so apps keep control of their own Firestore settings.
+- Narrative Studio's own login form is gone. Signed-out visitors go to the hub's account page and come back. One sign-in covers the whole site, because the hub and the apps share walshclassroom.com.
+- Security rules (published Nov 13 2026, copy in `platform/firestore.rules`): roles are protected; a confirmed .org/.edu email makes a teacher; invite codes, comment templates and teacher tips work again; teachers can make their own classrooms. Tested in the Rules Playground before publishing.
+- Not yet tested live: redeeming an invite code (needs a second, non-teacher account), and the full log out / log in round trip through Narrative Studio.
+- Still Tom-only until Phase 3: reading student workspaces and comments.
