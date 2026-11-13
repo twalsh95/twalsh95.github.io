@@ -60,7 +60,7 @@ The code of every app is public on GitHub Pages; only listing and data access ca
 ## Build phases
 1. New design: landing page, explainers, student help, `wc.js` (nav bar only), app-list automation.
 2. Platform accounts: sign-in on the hub, the bar shows the user, Narrative Studio moves to the platform sign-in, and teacher accounts from verified `.org`/`.edu` emails (plus invite codes for everyone else). Needs Tom's current Firestore rules from the Firebase console.
-3. Roles and classes: class creation, join codes, the student and teacher views, and the admin mail feature (below).
+3. Classes on the hub: class creation, join codes, the student and teacher views, and teachers reading their own students' work (design below). The admin mail feature moves to its own project.
 4. Assignments and the teacher's read-only view of student work, app by app.
 
 ## Locked (Tom, Nov 5 2026)
@@ -91,3 +91,24 @@ The code of every app is public on GitHub Pages; only listing and data access ca
 - Security rules (published Nov 13 2026, copy in `platform/firestore.rules`): roles are protected; a confirmed .org/.edu email makes a teacher; invite codes, comment templates and teacher tips work again; teachers can make their own classrooms. Tested in the Rules Playground before publishing.
 - Not yet tested live: redeeming an invite code (needs a second, non-teacher account), and the full log out / log in round trip through Narrative Studio.
 - Still Tom-only until Phase 3: reading student workspaces and comments.
+
+## Phase 3: design (agreed Nov 13 2026)
+Narrative Studio's `classrooms` become the site's classes. Same data, nothing moves, existing join codes keep working.
+
+**Decisions (Tom, Nov 13 2026)**
+- A class's teacher can read their students' work in **every app** (the student's whole `users/{uid}` folder, except the profile).
+- A class can **optionally list the apps it uses**. Students see those apps under that class on their home page; every app still shows below.
+- **Rosters are teacher-only.** Students see the class name and their teacher, not classmates.
+- Classes are **managed on the hub only** (`/classes/`). Narrative Studio's class list links there; its read-only student workspace and passage comments stay in the app.
+
+**What gets built**
+1. `/classes/`: students join with a code, see their classes, leave one. Teachers make a class, share its code, see the roster, remove students, pick the class's apps, archive.
+2. Signed-in home page: a "Your classes" section above the app bins (students: their classes and those apps; teachers: each class with code and student count, plus "Make a class").
+3. Teacher access records: joining a class writes `classAccess/{teacherUid}_{studentUid}`. The rules check the class belongs to that teacher and the student is a member; leaving or removal deletes it. The workspace read rule becomes "master, or a matching access record". Comments get the same rule.
+4. Roster rule tightened: `classrooms/{id}/members` readable only by the class's teacher, the member themselves, and the master.
+5. Narrative Studio changes: make-a-class and roster screens hand off to the hub; its classmate shared-projects feature stops reading rosters (it needs a per-class list of shared projects that members can read, since students can no longer list classmates).
+6. `wc.classes()` in `wc.js` for any app.
+
+**Moved out of Phase 3:** the admin mail panel (its own project: a Cloudflare Worker plus an email service).
+
+**Before other teachers' students join:** the ACS student data privacy check (see Still to check).

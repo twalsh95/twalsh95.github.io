@@ -89,7 +89,7 @@ h1, h2, h3 { margin: 0; }
 .login span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .login:hover { transform: translate(-2px, -2px); box-shadow: var(--shadow); }
 @media (max-width: 720px) { .login { padding: 0 10px; max-width: 120px; } }
-@media (max-width: 380px) { .nav a.opt { display: none; } }
+@media (max-width: 560px) { .nav a.opt { display: none; } }
 
 /* ---------- Buttons, badges, chips ---------- */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 18px;
@@ -265,6 +265,45 @@ details.faq .a { padding: 4px 20px 16px; }
 .acct-notes h2 { font-size: clamp(22px, 2.5vw, 28px); margin: 0 0 12px; }
 .acct-notes p { max-width: 46ch; }
 @media (max-width: 800px) { .acct-layout { grid-template-columns: 1fr; } }
+
+
+/* ---------- Classes page and home "Your classes" ---------- */
+.cls-block + .cls-block { margin-top: var(--space-section, 72px); }
+.cls-block > h2 { font-size: clamp(28px, 4vw, 44px); margin: 0 0 20px; }
+.cls-join, .cls-make { display: flex; flex-direction: column; gap: 16px; max-width: 560px; margin-bottom: 24px; }
+.cls-join .btn, .cls-make .btn { align-self: flex-start; }
+#join-code { font: 800 22px/1 var(--display); letter-spacing: .08em; text-transform: uppercase; max-width: 260px; }
+.cls-pick { border: var(--line); padding: 12px 16px; margin: 0; display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.cls-pick legend { font: 700 12px/1 var(--display); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); padding: 0 6px; }
+.cls-pick legend .note { font: 400 13px/1 var(--body); letter-spacing: 0; text-transform: none; }
+.cls-pick label { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; min-height: 32px; }
+.cls-pick input { width: 18px; height: 18px; accent-color: var(--violet); }
+.cls-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 24px; }
+.cls-card, .cls-panel { background: var(--page); border: var(--line); padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+.cls-card h3, .cls-panel h3 { font: 400 26px/1.15 var(--serif); margin: 0; }
+.cls-meta { margin: 0; color: var(--ink-2); font-weight: 700; }
+.cls-apps { display: flex; flex-wrap: wrap; gap: 8px; }
+.cls-apps .chip { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+.cls-apps .chip .dot { width: 12px; height: 12px; background: var(--c); border: 1.5px solid var(--ink); flex: none; }
+.cls-actions { margin: auto 0 0; }
+.cls-list { display: flex; flex-direction: column; gap: 24px; }
+.cls-panel-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; align-items: flex-start; }
+.cls-panel-head > div:first-child { display: flex; flex-direction: column; gap: 10px; }
+.cls-code { display: grid; grid-template-columns: auto auto; align-items: center; gap: 4px 12px; border: var(--line); padding: 10px 14px; }
+.cls-code-label { grid-column: 1 / -1; font: 700 12px/1 var(--display); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.cls-code-value { font: 800 clamp(22px, 3vw, 30px)/1 var(--display); letter-spacing: .06em; }
+.cls-code .btn { min-height: 36px; padding: 0 12px; }
+.cls-drawer { border-top: var(--line); padding-top: 16px; }
+.cls-roster { width: 100%; border-collapse: collapse; }
+.cls-roster th, .cls-roster td { text-align: left; padding: 10px 8px; border-bottom: var(--line); overflow-wrap: anywhere; }
+.cls-roster th { font: 700 12px/1 var(--display); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.cls-apps-form { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+.cls-archived { margin-top: 24px; }
+.yc-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.yc-code { font: 800 16px/1 var(--display); letter-spacing: .06em; color: var(--ink); }
+.yc-more { margin: 24px 0 0; }
+.cls-card .badge { align-self: flex-start; }
+@media (max-width: 560px) { .cls-roster th:nth-child(2), .cls-roster td:nth-child(2) { display: none; } }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; }

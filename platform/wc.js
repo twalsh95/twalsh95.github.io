@@ -24,7 +24,10 @@
     wc.signOut()     Signs out everywhere on walshclassroom.com
     wc.signInUrl()   The hub's account page, set to come back to this page
   Apps should send people to wc.signInUrl() instead of drawing their own login screen.
-  Coming in Phase 3: wc.classes(), wc.assignments().
+  Classes (Phase 3, from platform/classes.js, loaded on first use):
+    wc.classes()     Promise of {user, teaching: [...], enrolled: [...]} for the signed-in person.
+                     Each class: {id, name, code, teacherName, apps: [app ids], students (teaching only)}
+  Coming in Phase 4: wc.assignments().
 */
 (function () {
   "use strict";
@@ -101,6 +104,11 @@
   function role() { return user().then(function (u) { return u ? u.role : null; }); }
   function onAuth(fn) { return auth().then(function (m) { return m.onChange(fn); }, function () { fn(null); }); }
   function signOut() { return auth().then(function (m) { return m.logOut(); }); }
+  var classesMod = null;
+  function classes() {
+    if (!classesMod) classesMod = import(ORIGIN + "/platform/classes.js");
+    return classesMod.then(function (m) { return m.mine(); }, function () { return { user: null, teaching: [], enrolled: [] }; });
+  }
   function signInUrl(next) {
     var here = next || (location.pathname + location.search + location.hash);
     return ORIGIN + "/account/?next=" + encodeURIComponent(here);
@@ -108,7 +116,8 @@
 
   window.wc = {
     __loaded: true, apps: apps, app: app, current: current, origin: ORIGIN,
-    user: user, role: role, onAuth: onAuth, signOut: signOut, signInUrl: signInUrl, auth: auth
+    user: user, role: role, onAuth: onAuth, signOut: signOut, signInUrl: signInUrl, auth: auth,
+    classes: classes, classesModule: function () { return classesMod || (classesMod = import(ORIGIN + "/platform/classes.js")); }
   };
 
   // ---------- The bar ----------

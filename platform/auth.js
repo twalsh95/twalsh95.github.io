@@ -137,3 +137,7 @@ export function confirmEmail() {
   return withReturn((s) => sendEmailVerification(auth.currentUser, s));
 }
 export function logOut() { return signOut(auth); }
+
+// For platform/classes.js: a fresh ID token for Firestore's REST API, and the project id.
+export function token() { return auth.currentUser ? auth.currentUser.getIdToken() : Promise.resolve(null); }
+export const projectId = CONFIG.projectId;

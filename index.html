@@ -29,6 +29,13 @@
       <nav class="strip" id="strip" aria-label="Jump to a category"></nav>
     </section>
 
+    <section class="section" id="your-classes" aria-labelledby="yc-title" hidden>
+      <div class="wrap">
+        <div class="bin-head yc-head" style="--k: var(--ink)"><h2 class="display" id="yc-title">Your classes</h2><a class="linkish" href="/classes/">Manage classes</a></div>
+        <div id="yc-body"></div>
+      </div>
+    </section>
+
     <section class="section band" id="apps" aria-labelledby="apps-title">
       <div class="wrap">
         <h2 class="display sr-only" id="apps-title">All the apps</h2>
@@ -58,6 +65,7 @@
 
   <script src="/platform/wc.js" data-bar="off"></script>
   <script src="/assets/site.js"></script>
+  <script src="/assets/your-classes.js"></script>
   <script>
     (function () {
       var S = window.WCSite, esc = S.esc;

@@ -1,19 +1,19 @@
 // Firestore security rules for the narrative-studio-backend project (shared by every Walsh Classroom app).
 //
-// LIVE since Nov 13 2026 (Phase 2), published in the Firebase console. Keep this file in
+// PHASE 3 DRAFT (Nov 13 2026). Not live until published in the Firebase console.
+// The live version is the Phase 2 one in git history (commit e8b2a4d). Keep this file in
 // step with the console: a change here does nothing until it is published there.
-// The previous live version is in git history (commit 419f15f).
 //
-// What changed from the live rules:
-//   1. Roles are protected. Nobody can make themselves a teacher or admin by editing
-//      their own profile. Becoming a teacher takes a confirmed .org/.edu email or a
-//      teacher invite code; only admins promote people; only the master sets "master".
-//   2. Teacher invite codes, comment templates and teacher tips get rules. Before,
-//      Firebase blocked them, so those Narrative Studio features failed.
-//   3. Teachers can make their own classrooms and manage their own rosters.
-//   Everything Tom's account could do before, it still can.
+// Phase 2 (live): roles are protected (a confirmed .org/.edu email or an invite code makes a
+// teacher; only admins promote; only the master sets "master"); invite codes, comment
+// templates and teacher tips have rules; teachers make their own classrooms.
 //
-// Still Tom-only until Phase 3 (classes on the hub): reading student workspaces and comments.
+// Phase 3:
+//   1. Teacher access records (classAccess): a class's teacher can read their students'
+//      work in every app, and comment on it. Before, only Tom's account could.
+//   2. Rosters are teacher-only: students can't list a class's members any more.
+//   3. classrooms/{id}/shared: the projects students share with their class, readable
+//      by the class, so classmate sharing no longer needs the roster.
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -78,8 +78,10 @@ service cloud.firestore {
     // ── Everything else in a user's folder (projects, scenes, documents, pins…) ──
     match /users/{uid}/{col}/{rest=**} {
       allow read, write: if signedIn() && me() == uid && col != 'profile';
-      // Tom can read any student workspace (unchanged).
+      // Tom can read any student workspace.
       allow read: if isMaster();
+      // A teacher can read the work of a student in one of their classes (Phase 3).
+      allow read: if col != 'profile' && teachesStudent(uid);
       // Classmates can read projects marked shared:true (unchanged).
       allow read: if signedIn() && col != 'profile' && resource != null && resource.data.get('shared', false) == true;
     }
@@ -101,37 +103,76 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    // ── Teacher access records (Phase 3) ─────────────────────────
+    // classAccess/{teacherUid}_{studentUid} means "this teacher may read this student's work".
+    // A student writes it when they join one of the teacher's classes; it goes when they
+    // leave or are removed. One record per teacher and student, however many classes.
+    function teachesStudent(studentUid) {
+      return signedIn() && exists(/databases/$(database)/documents/classAccess/$(me() + '_' + studentUid));
+    }
+    function classPath(id) { return /databases/$(database)/documents/classrooms/$(id); }
+    function memberPath(id, uid) { return /databases/$(database)/documents/classrooms/$(id)/members/$(uid); }
+
+    match /classAccess/{key} {
+      // Looking up a record that doesn't exist just says "not found"; existing ones are private.
+      allow get: if signedIn() && (resource == null || resource.data.teacherUid == me() || resource.data.studentUid == me() || isMaster());
+      allow list: if signedIn() && (resource.data.teacherUid == me() || resource.data.studentUid == me() || isMaster());
+      // The student, for a class they're already in, that this teacher really teaches.
+      // (Joining saves the membership first, then this record.)
+      allow create, update: if signedIn()
+        && request.resource.data.studentUid == me()
+        && key == request.resource.data.teacherUid + '_' + me()
+        && get(classPath(request.resource.data.classroomId)).data.teacherUid == request.resource.data.teacherUid
+        && exists(memberPath(request.resource.data.classroomId, me()));
+      allow delete: if signedIn() && (resource.data.studentUid == me() || resource.data.teacherUid == me() || isMaster());
+    }
+
     // ── Classrooms ───────────────────────────────────────────────
     match /classrooms/{classroomId} {
       function myClassroom() { return resource.data.teacherUid == me(); }
-      // Anyone signed in can read classrooms (needed to join by code). Unchanged.
+      function teachesThis() { return get(classPath(classroomId)).data.teacherUid == me(); }
+      function inThis() { return exists(memberPath(classroomId, me())); }
+      // Anyone signed in can read classrooms (needed to join by code).
       allow read: if signedIn();
       // Teachers make their own; Tom can still manage all of them.
       allow create: if isTeacher() && request.resource.data.teacherUid == me();
       allow update, delete: if isMaster() || (isTeacher() && myClassroom());
 
       match /members/{memberUid} {
-        function teachesThis() {
-          return get(/databases/$(database)/documents/classrooms/$(classroomId)).data.teacherUid == me();
-        }
-        // Anyone signed in can read membership (roster and join check). Unchanged.
-        allow read: if signedIn();
+        // Rosters are teacher-only (Phase 3): the class's teacher, Tom, and each student's own entry.
+        allow read: if signedIn() && (me() == memberUid || isMaster() || teachesThis());
         // Students add or remove themselves; the class's teacher (and Tom) can remove anyone.
-        allow write: if signedIn() && (me() == memberUid || isMaster() || teachesThis());
+        allow create, update: if signedIn() && me() == memberUid;
+        allow delete: if signedIn() && (me() == memberUid || isMaster() || teachesThis());
+      }
+
+      // Projects students share with their class (Phase 3). Replaces reading the roster
+      // to find classmates' shared projects.
+      match /shared/{entryId} {
+        allow read: if signedIn() && (inThis() || isMaster() || teachesThis());
+        allow create, update: if signedIn() && inThis()
+          && request.resource.data.ownerUid == me()
+          && entryId == me() + '_' + request.resource.data.projectId;
+        allow delete: if signedIn() && (resource.data.ownerUid == me() || isMaster() || teachesThis());
       }
     }
 
-    // ── Comments (unchanged: Tom's feedback on student work) ─────
+    // ── Comments: a teacher's feedback on a student's work ───────
     match /comments/{commentId} {
       allow read, write: if isMaster();
+      // The student's class teacher (Phase 3): read, write their own comments.
+      allow read: if teachesStudent(resource.data.studentUid);
+      allow create: if request.resource.data.authorUid == me() && teachesStudent(request.resource.data.studentUid);
+      allow update, delete: if resource.data.authorUid == me() && teachesStudent(resource.data.studentUid);
       // Students can read comments on their own workspace and mark them as read.
       allow read, update: if signedIn() && me() == resource.data.studentUid;
 
       match /replies/{replyId} {
+        function studentOf() { return get(/databases/$(database)/documents/comments/$(commentId)).data.studentUid; }
         allow read, write: if isMaster();
+        allow read, create: if teachesStudent(studentOf());
         // Students can read and post replies on their own comments.
-        allow read, create: if signedIn()
-          && me() == get(/databases/$(database)/documents/comments/$(commentId)).data.studentUid;
+        allow read, create: if signedIn() && me() == studentOf();
       }
     }
 

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Unbounded:wght@700;800&family=Young+Serif&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/wc.css">
+  <title>Classes | Walsh Classroom</title>
+  <meta name="description" content="Join a class with a code, or make one for your students.">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header id="site-header"></header>
+  <main id="main">
+    <section class="page-head"><div class="wrap">
+      <p class="eyebrow">Classes</p>
+      <h1 class="display">Your classes.</h1>
+      <p class="lede" id="cls-lede">Students: join with the code your teacher gives you. Teachers: make a class and share its code.</p>
+    </div></section>
+    <section class="section band"><div class="wrap" id="cls-root" aria-live="polite">
+      <p class="acct-loading">Loading your classes…</p>
+    </div></section>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="/platform/wc.js" data-bar="off"></script>
+  <script src="/assets/site.js"></script>
+  <script type="module" src="/assets/classes.js"></script>
+  <script>
+    setTimeout(function () {
+      var p = document.querySelector("#cls-root .acct-loading");
+      if (p) p.innerHTML = "This is taking longer than it should. <a href=\"\">Refresh the page</a> to try again.";
+    }, 15000);
+  </script>
+</body>
+</html>
