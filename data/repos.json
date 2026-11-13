@@ -10,13 +10,13 @@
     {
       "id": "narrative-studio-2",
       "description": "Narrative Studio hosting",
-      "updated": "2026-11-12T15:52:00Z",
+      "updated": "2026-11-13T00:11:32Z",
       "manifest": null
     },
     {
       "id": "virtual-claymation-studio",
       "description": "3D virtual claymation studio with a gamified stop-motion tutorial, built in Godot",
-      "updated": "2026-11-12T23:15:24Z",
+      "updated": "2026-11-13T00:07:11Z",
       "manifest": null
     }
   ]
