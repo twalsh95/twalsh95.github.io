@@ -35,5 +35,12 @@
   <script src="/platform/wc.js" data-bar="off"></script>
   <script src="/assets/site.js"></script>
   <script type="module" src="/assets/account.js"></script>
+  <script>
+    // If the sign-in script never arrives (a dropped connection), don't leave people on "Checking".
+    setTimeout(function () {
+      var p = document.querySelector(".acct-loading");
+      if (p) p.innerHTML = "This is taking longer than it should. <a href=\"\">Refresh the page</a> to try again.";
+    }, 12000);
+  </script>
 </body>
 </html>

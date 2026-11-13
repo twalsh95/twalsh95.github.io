@@ -97,10 +97,11 @@ const ROLE = { student: "Student", teacher: "Teacher", admin: "Admin" };
 function showUser(u) {
   title.textContent = "You're logged in.";
   lede.textContent = "This account works in every app on Walsh Classroom.";
-  const confirmNote = u.teacherEmail && !u.emailVerified
-    ? '<div class="callout"><p><strong>Teachers: confirm your email.</strong> We sent a link to ' + esc(u.email) +
-      ". Teacher tools switch on after you click it.</p>" +
-      '<p><button type="button" class="btn ghost" id="resend">Send the link again</button> ' +
+  // Only for a .org/.edu account that isn't a teacher yet and hasn't confirmed its email.
+  const confirmNote = u.teacherEmail && !u.emailVerified && u.role === "student"
+    ? '<div class="callout"><p><strong>Teachers: confirm your email.</strong> Teacher tools switch on once ' + esc(u.email) +
+      " is confirmed. Click the link in the email we send you.</p>" +
+      '<p><button type="button" class="btn ghost" id="resend">Send me the link</button> ' +
       '<button type="button" class="btn ghost" id="recheck">I clicked it</button></p></div>'
     : "";
   card.innerHTML =
