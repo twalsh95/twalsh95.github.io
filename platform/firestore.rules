@@ -1,0 +1,66 @@
+// Firestore security rules for the narrative-studio-backend project (shared by every Walsh Classroom app).
+// This file is a copy of what is LIVE in the Firebase console, taken Nov 12 2026.
+// Editing this file changes nothing by itself: rules only change when they're published in the
+// console (Firestore Database > Rules) or deployed with the Firebase CLI. Keep this copy in step.
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── User workspaces ──────────────────────────────────────────
+    // Each user owns their own subtree
+    match /users/{uid}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+
+      // Teacher can read any student workspace
+      allow read: if request.auth != null
+        && request.auth.uid == 'vCXND7JhhscwvGoWS4kztBBDmbk2';
+
+      // Classmates can read projects marked shared:true
+      allow read: if request.auth != null
+        && resource.data.shared == true;
+    }
+
+    // ── Classrooms ───────────────────────────────────────────────
+    match /classrooms/{classroomId} {
+      // Anyone signed in can read classrooms (needed to join by code)
+      allow read: if request.auth != null;
+      // Only teacher can create/edit/delete classrooms
+      allow write: if request.auth != null
+        && request.auth.uid == 'vCXND7JhhscwvGoWS4kztBBDmbk2';
+
+      match /members/{memberUid} {
+        // Anyone signed in can read membership (needed for roster and join check)
+        allow read: if request.auth != null;
+        // Students can add/remove themselves; teacher can remove anyone
+        allow write: if request.auth != null && (
+          request.auth.uid == memberUid ||
+          request.auth.uid == 'vCXND7JhhscwvGoWS4kztBBDmbk2'
+        );
+      }
+    }
+
+    // ── Comments ─────────────────────────────────────────────────
+    match /comments/{commentId} {
+      // Teacher can do anything with comments
+      allow read, write: if request.auth != null
+        && request.auth.uid == 'vCXND7JhhscwvGoWS4kztBBDmbk2';
+
+      // Students can read comments on their own workspace
+      // and mark them as read (update)
+      allow read, update: if request.auth != null
+        && request.auth.uid == resource.data.studentUid;
+
+      match /replies/{replyId} {
+        // Teacher can read/write all replies
+        allow read, write: if request.auth != null
+          && request.auth.uid == 'vCXND7JhhscwvGoWS4kztBBDmbk2';
+
+        // Students can read and post replies on their own comments
+        allow read, create: if request.auth != null
+          && request.auth.uid == get(
+            /databases/$(database)/documents/comments/$(commentId)
+          ).data.studentUid;
+      }
+    }
+  }
+}

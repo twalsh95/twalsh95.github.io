@@ -83,6 +83,12 @@ h1, h2, h3 { margin: 0; }
   .lockup .word { display: none; }
   .nav a { padding: 8px; font-size: 15px; }
 }
+.login { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; flex: none; max-width: 200px;
+  font: 700 15px/1 var(--body); text-decoration: none; background: var(--violet); color: var(--page); border: 1.5px solid var(--violet);
+  transition: transform .12s, box-shadow .12s; }
+.login span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.login:hover { transform: translate(-2px, -2px); box-shadow: var(--shadow); }
+@media (max-width: 720px) { .login { padding: 0 10px; max-width: 120px; } }
 @media (max-width: 380px) { .nav a.opt { display: none; } }
 
 /* ---------- Buttons, badges, chips ---------- */
@@ -227,6 +233,38 @@ details.faq .a { padding: 4px 20px 16px; }
 .site-footer p { margin: 0; color: var(--ink-2); font-size: 16px; }
 .site-footer nav { margin-left: auto; display: flex; gap: 16px; }
 .site-footer nav a { font-weight: 700; }
+
+
+/* ---------- Account page ---------- */
+.acct-layout { display: grid; grid-template-columns: minmax(0, 520px) minmax(0, 1fr); gap: clamp(32px, 5vw, 64px); align-items: start; }
+.acct-card { background: var(--page); border: var(--line); padding: clamp(20px, 4vw, 32px); }
+.acct-card form { display: flex; flex-direction: column; gap: 18px; }
+.acct-loading { margin: 0; color: var(--ink-2); }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font: 700 12px/1 var(--display); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.field input { min-height: 48px; padding: 0 14px; font: 400 18px/1.2 var(--body); color: var(--ink); background: var(--page);
+  border: var(--line); border-radius: 0; }
+.field input:focus-visible { outline: 3px solid var(--violet); outline-offset: 2px; }
+.acct-card .btn { align-self: flex-start; }
+.acct-msg { margin: 0; font-weight: 700; }
+.acct-msg:empty { display: none; }
+.acct-msg.bad { color: var(--raspberry); }
+.acct-msg.ok { color: var(--green); }
+.acct-links { margin: 0; display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.linkish { background: none; border: 0; padding: 0; font: 700 16px/1.4 var(--body); color: var(--ink); text-decoration: underline;
+  text-underline-offset: 3px; cursor: pointer; }
+.linkish:hover { color: var(--violet); }
+.acct-facts { margin: 0 0 20px; border: var(--line); }
+.acct-facts div { padding: 12px 16px; border-bottom: var(--line); }
+.acct-facts div:last-child { border-bottom: 0; }
+.acct-facts dt { font: 700 12px/1 var(--display); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 6px; }
+.acct-facts dd { margin: 0; font-weight: 700; overflow-wrap: anywhere; }
+.acct-card .callout { margin-bottom: 20px; padding: 20px; }
+.acct-card .callout p:last-child { display: flex; flex-wrap: wrap; gap: 8px; }
+.acct-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.acct-notes h2 { font-size: clamp(22px, 2.5vw, 28px); margin: 0 0 12px; }
+.acct-notes p { max-width: 46ch; }
+@media (max-width: 800px) { .acct-layout { grid-template-columns: 1fr; } }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; }

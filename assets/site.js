@@ -26,6 +26,7 @@
       '<div class="wrap">' +
       '<a class="lockup" href="/" aria-label="Walsh Classroom home"><span class="sq"><span class="mark simple"></span></span><span class="word">Walsh Classroom</span></a>' +
       '<nav class="nav" aria-label="Main">' + navLink("/", "Apps") + navLink("/teachers/", "For teachers", "opt") + navLink("/help/", "Help") + "</nav>" +
+      '<a class="login" id="login-btn" href="/account/"' + (here.indexOf("/account/") === 0 ? ' aria-current="page"' : "") + '><span>Log in</span></a>' +
       '<button class="icon-btn" id="theme-btn" type="button"></button>' +
       "</div>";
     var btn = document.getElementById("theme-btn");
@@ -41,6 +42,14 @@
       paint();
     });
     matchMedia("(prefers-color-scheme: dark)").addEventListener("change", paint);
+  }
+  // Log in button: becomes the person's name once they're signed in.
+  var login = document.getElementById("login-btn");
+  if (login && window.wc && wc.onAuth) {
+    wc.onAuth(function (u) {
+      login.querySelector("span").textContent = u ? u.name : "Log in";
+      login.title = u ? "Signed in as " + u.email : "";
+    });
   }
   var footer = document.getElementById("site-footer");
   if (footer) {

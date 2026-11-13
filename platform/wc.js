@@ -17,7 +17,14 @@
     wc.apps()        Promise of the full app list (generated repo list merged with apps.js overrides)
     wc.app(id)       Promise of one app, by id (its repo name)
     wc.current()     Promise of the app this page belongs to, or null
-  Sign-in helpers (wc.user, wc.role, wc.classes, wc.assignments) arrive in Phase 2.
+  Sign-in (Phase 2, from platform/auth.js, loaded on first use):
+    wc.user()        Promise of the signed-in user {uid, name, email, role, emailVerified} or null
+    wc.role()        Promise of "student", "teacher", "admin", or null
+    wc.onAuth(fn)    Calls fn(user) now and whenever someone signs in or out
+    wc.signOut()     Signs out everywhere on walshclassroom.com
+    wc.signInUrl()   The hub's account page, set to come back to this page
+  Apps should send people to wc.signInUrl() instead of drawing their own login screen.
+  Coming in Phase 3: wc.classes(), wc.assignments().
 */
 (function () {
   "use strict";
@@ -82,7 +89,27 @@
     return id ? app(id) : Promise.resolve(null);
   }
 
-  window.wc = { __loaded: true, apps: apps, app: app, current: current, origin: ORIGIN };
+  // ---------- Sign-in (Phase 2) ----------
+  // platform/auth.js is loaded only when something asks for the user, so pages
+  // that never do (and their visitors) don't download Firebase.
+  var authMod = null;
+  function auth() {
+    if (!authMod) authMod = import(ORIGIN + "/platform/auth.js");
+    return authMod;
+  }
+  function user() { return auth().then(function (m) { return m.user(); }, function () { return null; }); }
+  function role() { return user().then(function (u) { return u ? u.role : null; }); }
+  function onAuth(fn) { return auth().then(function (m) { return m.onChange(fn); }, function () { fn(null); }); }
+  function signOut() { return auth().then(function (m) { return m.logOut(); }); }
+  function signInUrl(next) {
+    var here = next || (location.pathname + location.search + location.hash);
+    return ORIGIN + "/account/?next=" + encodeURIComponent(here);
+  }
+
+  window.wc = {
+    __loaded: true, apps: apps, app: app, current: current, origin: ORIGIN,
+    user: user, role: role, onAuth: onAuth, signOut: signOut, signInUrl: signInUrl, auth: auth
+  };
 
   // ---------- The bar ----------
   if (script && script.getAttribute("data-bar") === "off") return;
@@ -104,7 +131,8 @@
     ".name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
     ".right{margin-left:auto;display:flex}" +
     ".right a{border-left:1.5px solid #3A3A3E}" +
-    "@media (max-width:640px){.word{display:none}.right .all span{display:none}}";
+    ".acct span{max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
+    "@media (max-width:640px){.word{display:none}.right .all span{display:none}.acct span{max-width:96px}}";
 
   function draw(cur) {
     var host = document.createElement("div");
@@ -117,9 +145,17 @@
       '<nav class="bar" style="--c:' + color + '" aria-label="Walsh Classroom">' +
       '<a class="home" href="' + ORIGIN + '/" title="Walsh Classroom home"><span class="sq"><span class="mk"></span></span><span class="word">Walsh Classroom</span></a>' +
       (cur ? '<span class="app"><span class="dot"></span><span class="name"></span></span>' : "") +
-      '<span class="right"><a href="' + helpHref + '">Help</a>' +
+      '<span class="right"><a class="acct" href="' + signInUrl() + '"><span>Log in</span></a><a href="' + helpHref + '">Help</a>' +
       '<a class="all" href="' + ORIGIN + '/">&#8592;<span>All apps</span></a></span></nav>';
     if (cur) root.querySelector(".name").textContent = cur.name;
+    var acct = root.querySelector(".acct");
+    var paintAcct = function (u) {
+      acct.querySelector("span").textContent = u ? u.name : "Log in";
+      acct.href = u ? ORIGIN + "/account/" : signInUrl();
+      acct.title = u ? "Signed in as " + u.email : "Log in to Walsh Classroom";
+    };
+    var hook = function () { onAuth(paintAcct); };
+    if (window.requestIdleCallback) requestIdleCallback(hook, { timeout: 2000 }); else setTimeout(hook, 300);
     document.body.insertBefore(host, document.body.firstChild);
     document.documentElement.style.setProperty("--wc-bar-height", BAR_H + "px");
     if (!script || script.getAttribute("data-offset") !== "none") {
