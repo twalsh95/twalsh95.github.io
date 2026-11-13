@@ -1,66 +1,152 @@
 // Firestore security rules for the narrative-studio-backend project (shared by every Walsh Classroom app).
-// This file is a copy of what is LIVE in the Firebase console, taken Nov 12 2026.
-// Editing this file changes nothing by itself: rules only change when they're published in the
-// console (Firestore Database > Rules) or deployed with the Firebase CLI. Keep this copy in step.
+//
+// LIVE since Nov 13 2026 (Phase 2), published in the Firebase console. Keep this file in
+// step with the console: a change here does nothing until it is published there.
+// The previous live version is in git history (commit 419f15f).
+//
+// What changed from the live rules:
+//   1. Roles are protected. Nobody can make themselves a teacher or admin by editing
+//      their own profile. Becoming a teacher takes a confirmed .org/.edu email or a
+//      teacher invite code; only admins promote people; only the master sets "master".
+//   2. Teacher invite codes, comment templates and teacher tips get rules. Before,
+//      Firebase blocked them, so those Narrative Studio features failed.
+//   3. Teachers can make their own classrooms and manage their own rosters.
+//   Everything Tom's account could do before, it still can.
+//
+// Still Tom-only until Phase 3 (classes on the hub): reading student workspaces and comments.
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ── User workspaces ──────────────────────────────────────────
-    // Each user owns their own subtree
-    match /users/{uid}/{document=**} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
+    // ── Who's asking ─────────────────────────────────────────────
+    function signedIn() { return request.auth != null; }
+    function me() { return request.auth.uid; }
+    // Tom's account. The root of trust: it can't be granted or taken away by a profile edit.
+    function isMaster() { return signedIn() && me() == 'vCXND7JhhscwvGoWS4kztBBDmbk2'; }
+    function profilePath(uid) { return /databases/$(database)/documents/users/$(uid)/profile/main; }
+    function myProfile() { return get(profilePath(me())).data; }
+    function hasProfile() { return signedIn() && exists(profilePath(me())); }
+    function isAdmin() { return isMaster() || (hasProfile() && myProfile().get('isAdmin', false) == true); }
+    function isTeacher() { return isAdmin() || (hasProfile() && myProfile().get('role', 'student') == 'teacher'); }
+    // A school email that its owner has confirmed by clicking Firebase's link.
+    function confirmedTeacherEmail() {
+      return signedIn()
+        && request.auth.token.email_verified == true
+        && request.auth.token.email.lower().matches('.*[.](org|edu)$');
+    }
+    function changed() { return request.resource.data.diff(resource.data).affectedKeys(); }
 
-      // Teacher can read any student workspace
-      allow read: if request.auth != null
-        && request.auth.uid == 'vCXND7JhhscwvGoWS4kztBBDmbk2';
+    // ── Profiles: users/{uid}/profile/main ───────────────────────
+    match /users/{uid}/profile/{docId} {
+      allow read: if signedIn() && (me() == uid || isTeacher());
 
-      // Classmates can read projects marked shared:true
-      allow read: if request.auth != null
-        && resource.data.shared == true;
+      // Your own profile, on first sign-in. You start as a student, or as a teacher
+      // if your .org/.edu email is confirmed. Never admin or master.
+      allow create: if signedIn() && me() == uid
+        && request.resource.data.get('isAdmin', false) == false
+        && request.resource.data.get('isMaster', false) == false
+        && (request.resource.data.get('role', 'student') == 'student'
+            || (request.resource.data.role == 'teacher' && confirmedTeacherEmail()));
+
+      // Your own profile, later. Change anything except your role, unless you're
+      // becoming a teacher with a confirmed school email or an invite code you
+      // redeem in the same write.
+      allow update: if signedIn() && me() == uid
+        && !changed().hasAny(['isAdmin', 'isMaster'])
+        && (!changed().hasAny(['role'])
+            || (request.resource.data.role == 'teacher' && (confirmedTeacherEmail() || redeemsInvite())));
+
+      // Admins manage other people's roles. Only the master can make or unmake a master.
+      allow create, update: if isAdmin()
+        && (request.resource.data.get('isMaster', false) == false || isMaster())
+        && (uid != 'vCXND7JhhscwvGoWS4kztBBDmbk2' || isMaster());
+
+      allow delete: if isMaster();
+    }
+
+    // The invite code named in the profile write is marked used by you in the same batch,
+    // and it wasn't used before.
+    function redeemsInvite() {
+      let code = request.resource.data.get('inviteCode', '');
+      let path = /databases/$(database)/documents/teacherInviteCodes/$(code);
+      return code is string && code != ''
+        && exists(path)
+        && get(path).data.usedBy == null
+        && getAfter(path).data.usedBy == me();
+    }
+
+    // ── Everything else in a user's folder (projects, scenes, documents, pins…) ──
+    match /users/{uid}/{col}/{rest=**} {
+      allow read, write: if signedIn() && me() == uid && col != 'profile';
+      // Tom can read any student workspace (unchanged).
+      allow read: if isMaster();
+      // Classmates can read projects marked shared:true (unchanged).
+      allow read: if signedIn() && col != 'profile' && resource != null && resource.data.get('shared', false) == true;
+    }
+
+    // ── Teacher invite codes ─────────────────────────────────────
+    match /teacherInviteCodes/{code} {
+      // Redeeming looks a code up directly; only admins can list them.
+      allow get: if signedIn();
+      allow list: if isAdmin();
+      allow create: if isAdmin()
+        && request.resource.data.issuedBy == me()
+        && request.resource.data.usedBy == null;
+      // Redeem: mark an unused, unexpired code as used by you. Nothing else changes.
+      allow update: if signedIn()
+        && resource.data.usedBy == null
+        && resource.data.expiresAt > request.time
+        && request.resource.data.usedBy == me()
+        && changed().hasOnly(['usedBy', 'usedAt']);
+      allow delete: if isAdmin();
     }
 
     // ── Classrooms ───────────────────────────────────────────────
     match /classrooms/{classroomId} {
-      // Anyone signed in can read classrooms (needed to join by code)
-      allow read: if request.auth != null;
-      // Only teacher can create/edit/delete classrooms
-      allow write: if request.auth != null
-        && request.auth.uid == 'vCXND7JhhscwvGoWS4kztBBDmbk2';
+      function myClassroom() { return resource.data.teacherUid == me(); }
+      // Anyone signed in can read classrooms (needed to join by code). Unchanged.
+      allow read: if signedIn();
+      // Teachers make their own; Tom can still manage all of them.
+      allow create: if isTeacher() && request.resource.data.teacherUid == me();
+      allow update, delete: if isMaster() || (isTeacher() && myClassroom());
 
       match /members/{memberUid} {
-        // Anyone signed in can read membership (needed for roster and join check)
-        allow read: if request.auth != null;
-        // Students can add/remove themselves; teacher can remove anyone
-        allow write: if request.auth != null && (
-          request.auth.uid == memberUid ||
-          request.auth.uid == 'vCXND7JhhscwvGoWS4kztBBDmbk2'
-        );
+        function teachesThis() {
+          return get(/databases/$(database)/documents/classrooms/$(classroomId)).data.teacherUid == me();
+        }
+        // Anyone signed in can read membership (roster and join check). Unchanged.
+        allow read: if signedIn();
+        // Students add or remove themselves; the class's teacher (and Tom) can remove anyone.
+        allow write: if signedIn() && (me() == memberUid || isMaster() || teachesThis());
       }
     }
 
-    // ── Comments ─────────────────────────────────────────────────
+    // ── Comments (unchanged: Tom's feedback on student work) ─────
     match /comments/{commentId} {
-      // Teacher can do anything with comments
-      allow read, write: if request.auth != null
-        && request.auth.uid == 'vCXND7JhhscwvGoWS4kztBBDmbk2';
-
-      // Students can read comments on their own workspace
-      // and mark them as read (update)
-      allow read, update: if request.auth != null
-        && request.auth.uid == resource.data.studentUid;
+      allow read, write: if isMaster();
+      // Students can read comments on their own workspace and mark them as read.
+      allow read, update: if signedIn() && me() == resource.data.studentUid;
 
       match /replies/{replyId} {
-        // Teacher can read/write all replies
-        allow read, write: if request.auth != null
-          && request.auth.uid == 'vCXND7JhhscwvGoWS4kztBBDmbk2';
-
-        // Students can read and post replies on their own comments
-        allow read, create: if request.auth != null
-          && request.auth.uid == get(
-            /databases/$(database)/documents/comments/$(commentId)
-          ).data.studentUid;
+        allow read, write: if isMaster();
+        // Students can read and post replies on their own comments.
+        allow read, create: if signedIn()
+          && me() == get(/databases/$(database)/documents/comments/$(commentId)).data.studentUid;
       }
+    }
+
+    // ── Comment templates: a teacher's saved feedback snippets ───
+    match /commentTemplates/{id} {
+      allow read, update, delete: if signedIn() && resource.data.authorUid == me();
+      allow create: if isTeacher() && request.resource.data.authorUid == me();
+    }
+
+    // ── Teacher tips: shown to students inside the tools ─────────
+    match /teacherTips/{id} {
+      // Students load every tip and the app picks the ones meant for them.
+      allow read: if signedIn();
+      allow create: if isTeacher() && request.resource.data.authorUid == me();
+      allow update, delete: if signedIn() && resource.data.authorUid == me();
     }
   }
 }

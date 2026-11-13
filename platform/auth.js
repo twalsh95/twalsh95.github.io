@@ -67,12 +67,34 @@ function shape(u, p) {
   };
 }
 
+// A confirmed .org/.edu email becomes a teacher. The security rules check the
+// email and the confirmation themselves (platform/firestore.rules), so this can't
+// promote anyone the rules wouldn't.
+async function promoteIfTeacherEmail(u, p) {
+  if (!u || !u.emailVerified || !isTeacherEmail(u.email)) return p;
+  if (p && (p.role === "teacher" || p.isAdmin)) return p;
+  try {
+    const token = await u.getIdToken(true);   // fresh token, so it carries email_verified
+    const url = "https://firestore.googleapis.com/v1/projects/" + CONFIG.projectId +
+      "/databases/(default)/documents/users/" + u.uid + "/profile/main?updateMask.fieldPaths=role";
+    const r = await fetch(url, {
+      method: "PATCH",
+      headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
+      body: JSON.stringify({ fields: { role: { stringValue: "teacher" } } })
+    });
+    return r.ok ? Object.assign({}, p, { role: "teacher" }) : p;
+  } catch (e) {
+    return p;
+  }
+}
+async function readAndPromote(u) { return promoteIfTeacherEmail(u, await readProfile(u)); }
+
 let current;                      // undefined until Firebase reports, then a user or null
 const listeners = new Set();
 function publish(v) { current = v; listeners.forEach((fn) => { try { fn(v); } catch (e) {} }); }
 
 const ready = new Promise((resolve) => {
-  onAuthStateChanged(auth, async (u) => { publish(shape(u, await readProfile(u))); resolve(); });
+  onAuthStateChanged(auth, async (u) => { publish(shape(u, await readAndPromote(u))); resolve(); });
 });
 
 export function user() { return ready.then(() => current); }
@@ -83,7 +105,7 @@ export function onChange(fn) {
 }
 export async function refresh() {
   if (auth.currentUser) await auth.currentUser.reload();
-  publish(shape(auth.currentUser, await readProfile(auth.currentUser)));
+  publish(shape(auth.currentUser, await readAndPromote(auth.currentUser)));
   return current;
 }
 
