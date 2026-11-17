@@ -10,8 +10,22 @@
     {
       "id": "light-lab",
       "description": "",
-      "updated": "2026-11-17T13:20:24Z",
-      "manifest": null
+      "updated": "2026-11-17T18:17:46Z",
+      "manifest": {
+        "name": "Light Lab",
+        "kind": "Tool",
+        "icon": "camera",
+        "color": "#F2A93B",
+        "status": "beta",
+        "tags": [
+          "Studio",
+          "Photography",
+          "Lighting"
+        ],
+        "tagline": "Place lights around a model and see the portrait change.",
+        "description": "A virtual lighting studio. Move key, fill, back and hair lights around a clay model, set the camera, and watch the portrait change. Practice three-point, high-key and low-key lighting before the real stations.",
+        "note": "Early build. No sign-in, and nothing is sent anywhere."
+      }
     },
     {
       "id": "narrative-studio-2",
@@ -22,12 +36,12 @@
     {
       "id": "premiere-basics",
       "description": "",
-      "updated": "2026-11-13T12:43:42Z",
+      "updated": "2026-11-17T18:17:51Z",
       "manifest": {
         "name": "Premiere Basics Missions",
         "kind": "Material",
         "icon": "film",
-        "color": "#F2A93B",
+        "color": "#C98A1E",
         "status": "live",
         "tags": [
           "Videography",
