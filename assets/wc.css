@@ -305,6 +305,20 @@ details.faq .a { padding: 4px 20px 16px; }
 .cls-card .badge { align-self: flex-start; }
 @media (max-width: 560px) { .cls-roster th:nth-child(2), .cls-roster td:nth-child(2) { display: none; } }
 
+
+/* ---------- Privacy pages ---------- */
+.facts-list { margin: 0 0 8px; border: var(--line); background: var(--page); }
+.facts-list div { display: grid; grid-template-columns: minmax(140px, 220px) 1fr; gap: 4px 20px; padding: 12px 16px; border-bottom: var(--line); }
+.facts-list div:last-child { border-bottom: 0; }
+.facts-list dt { font: 700 12px/1.4 var(--display); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.facts-list dd { margin: 0; }
+.data-table { width: 100%; border-collapse: collapse; background: var(--page); border: var(--line); margin: 8px 0 16px; }
+.data-table th, .data-table td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: var(--line); overflow-wrap: anywhere; }
+.data-table th { font: 700 12px/1.4 var(--display); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.data-table code { font-size: 15px; }
+.page-head .note { margin-top: 12px; }
+@media (max-width: 560px) { .facts-list div { grid-template-columns: 1fr; } }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; }
   .card:hover, .btn:hover, .chip:hover { transform: none; }

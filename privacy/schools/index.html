@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Unbounded:wght@700;800&family=Young+Serif&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/wc.css">
+  <link rel="canonical" href="https://walshclassroom.com/privacy/schools/">
+  <title>For Schools: Student Data Privacy | Walsh Classroom</title>
+  <meta name="description" content="Student data privacy information for schools and IT staff: data inventory, service providers, domains to allow in a web filter, and how to get a signed Massachusetts or National Student Data Privacy Agreement for Walsh Classroom.">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header id="site-header"></header>
+  <main id="main">
+    <section class="page-head"><div class="wrap">
+      <a class="crumb" href="/privacy/">&#8592; Student privacy policy</a>
+      <p class="eyebrow">For schools and IT staff</p>
+      <h1 class="display">Vetting Walsh Classroom.</h1>
+      <p class="lede">Everything a district privacy or technology office usually asks for, in one place: what's collected, where it goes, what to allow in your filter, and how to get a signed data privacy agreement.</p>
+    </div></section>
+
+    <section class="section band"><div class="wrap prose">
+      <h2>At a glance</h2>
+      <dl class="facts-list">
+        <div><dt>What it is</dt><dd>Free educational web apps for media arts classes (screenwriting, photography, animation, video). No paid tier.</dd></div>
+        <div><dt>Operator</dt><dd>Tom Walsh, an individual teacher. Contact <a href="mailto:help@walshclassroom.com">help@walshclassroom.com</a>.</dd></div>
+        <div><dt>Advertising, analytics, tracking</dt><dd>None. No ad networks, analytics, tracking pixels or third-party cookies.</dd></div>
+        <div><dt>Sale or sharing of data</dt><dd>Never sold, rented, traded or shared for anyone else's purposes.</dd></div>
+        <div><dt>AI</dt><dd>No AI features process student data, and student data is never used to train AI.</dd></div>
+        <div><dt>Sign-in</dt><dd>Email and password (Google Firebase Authentication). Apps that save nothing, like Guide Match, need no account.</dd></div>
+        <div><dt>Encryption</dt><dd>HTTPS everywhere. Passwords stored hashed by Google.</dd></div>
+        <div><dt>Data agreement</dt><dd>I'll sign the Massachusetts Student Data Privacy Agreement or the National Data Privacy Agreement (Student Data Privacy Consortium), including the Exhibit E general offer to other districts.</dd></div>
+      </dl>
+
+      <h2>Data inventory</h2>
+      <p>Organized like the data schedule (Exhibit B) of the Student Data Privacy Consortium agreements. Anything not listed is not collected.</p>
+      <table class="data-table">
+        <thead><tr><th scope="col">Category</th><th scope="col">Collected</th><th scope="col">Details</th></tr></thead>
+        <tbody>
+          <tr><td>Student name</td><td>Yes</td><td>As the student types it when making an account.</td></tr>
+          <tr><td>Email address</td><td>Yes</td><td>Used to sign in and to identify the student to their teacher.</td></tr>
+          <tr><td>Password</td><td>Yes</td><td>Handled by Firebase Authentication; stored hashed; not visible to the operator.</td></tr>
+          <tr><td>Account type</td><td>Yes</td><td>Student, teacher or administrator.</td></tr>
+          <tr><td>Class enrollment</td><td>Yes</td><td>Classes joined with a code, and the date joined.</td></tr>
+          <tr><td>Student-created work</td><td>Yes</td><td>Projects made in apps that save to an account (Narrative Studio: stories, characters, outlines, scenes, scripts).</td></tr>
+          <tr><td>Teacher feedback</td><td>Yes</td><td>Teacher comments on student work, and student replies.</td></tr>
+          <tr><td>Grades, assessments, test scores</td><td>No</td><td>&nbsp;</td></tr>
+          <tr><td>Student ID numbers, SSN, birth date</td><td>No</td><td>&nbsp;</td></tr>
+          <tr><td>Demographics, health, special education, discipline</td><td>No</td><td>&nbsp;</td></tr>
+          <tr><td>Parent or guardian information</td><td>No</td><td>&nbsp;</td></tr>
+          <tr><td>Location, photos, audio, video of students</td><td>No</td><td>&nbsp;</td></tr>
+          <tr><td>Browsing history, device identifiers, usage analytics</td><td>No</td><td>Standard server logs kept by the hosting provider (GitHub) are not used by the operator.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Service providers</h2>
+      <table class="data-table">
+        <thead><tr><th scope="col">Provider</th><th scope="col">What it does</th><th scope="col">Student data it handles</th></tr></thead>
+        <tbody>
+          <tr><td>Google Firebase (Authentication, Cloud Firestore)</td><td>Accounts and saved work</td><td>Name, email, hashed password, class enrollment, work, feedback</td></tr>
+          <tr><td>Google Fonts</td><td>Typefaces</td><td>None stored; the browser requests font files</td></tr>
+          <tr><td>GitHub Pages</td><td>Hosts the site and apps</td><td>None stored; standard request logs</td></tr>
+          <tr><td>Cloudflare</td><td>Domain name; forwards email to help@</td><td>Only what someone writes in an email to help@</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Allow it in your web filter</h2>
+      <p>Walsh Classroom is an education site. If your filter blocks new or uncategorized sites, allow these domains (or ask your filter vendor to categorize walshclassroom.com as Education):</p>
+      <table class="data-table">
+        <thead><tr><th scope="col">Domain</th><th scope="col">Why</th></tr></thead>
+        <tbody>
+          <tr><td><code>walshclassroom.com</code></td><td>The site and every app</td></tr>
+          <tr><td><code>www.gstatic.com</code></td><td>Firebase sign-in and database code</td></tr>
+          <tr><td><code>identitytoolkit.googleapis.com</code>, <code>securetoken.googleapis.com</code></td><td>Signing in and staying signed in</td></tr>
+          <tr><td><code>firestore.googleapis.com</code></td><td>Saving and loading work</td></tr>
+          <tr><td><code>narrative-studio-backend.firebaseapp.com</code></td><td>Firebase sign-in support</td></tr>
+          <tr><td><code>fonts.googleapis.com</code>, <code>fonts.gstatic.com</code></td><td>Typefaces</td></tr>
+        </tbody>
+      </table>
+      <p>Virtual Claymation Studio is a large 3D app; some Chromebook policies need the site allowed for WebAssembly and WebGL.</p>
+
+      <h2>Getting a signed agreement</h2>
+      <ol>
+        <li>Email <a href="mailto:help@walshclassroom.com">help@walshclassroom.com</a> with your district's name and the agreement you use. Massachusetts districts usually use the Massachusetts Student Data Privacy Agreement from the Student Data Privacy Consortium (SDPC); others use the National Data Privacy Agreement.</li>
+        <li>I'll complete and sign it, including the data schedule above, and the Exhibit E general offer so other districts can adopt the same terms.</li>
+        <li>If your district already has an SDPC agreement on file for Walsh Classroom, you can sign its Exhibit E to adopt it without a new negotiation.</li>
+      </ol>
+
+      <h2>Requests about student data</h2>
+      <p>Schools can ask for a student's or a class's data to be exported or deleted at any time. Deletion is completed within 30 days of a request, and at the end of an agreement as it specifies, with written confirmation. Email <a href="mailto:help@walshclassroom.com">help@walshclassroom.com</a> from a school address.</p>
+
+      <h2>Security incidents</h2>
+      <p>If student data is accessed without authorization, affected schools are told promptly with what happened, what data was involved and what's being done, following the notice terms in the school's agreement and applicable law, including Massachusetts General Laws chapter 93H.</p>
+
+      <h2>Accessibility</h2>
+      <p>The hub is built for keyboard use and screen readers, with high-contrast colors in light and dark themes and text set in Atkinson Hyperlegible. Report anything that gets in the way to <a href="mailto:help@walshclassroom.com">help@walshclassroom.com</a>.</p>
+    </div></section>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="/platform/wc.js" data-bar="off"></script>
+  <script src="/assets/site.js"></script>
+</body>
+</html>

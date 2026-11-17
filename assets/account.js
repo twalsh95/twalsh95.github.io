@@ -44,6 +44,8 @@ function showForm() {
       field("name", "Your name", "text", "name") +
       field("email", "Email", "email", "username") +
       field("password", "Password (at least 6 characters)", "password", "new-password", ' minlength="6"') +
+      '<p class="note acct-privacy">Your name, email and work are used only to run these apps for school: no ads, no tracking, never sold. ' +
+      'Under 13? Make an account only if your school uses Walsh Classroom. <a href="/privacy/">Student privacy policy</a></p>' +
       '<button class="btn" type="submit">Make my account</button>' +
       '<p class="acct-links"><button type="button" class="linkish" data-mode="login">Already have an account? Log in</button></p>',
     reset:
