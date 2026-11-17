@@ -34,7 +34,7 @@ Categories wear their meaning: Studios = Imagination, Skill builders = Play, Too
 | Ink 2 | `#3A3A3E` | `#BDBDC4` | Supporting text |
 | Brand colors | deep value | bright value | See the brand palette above. Violet deep hover: `#3B2A9E` |
 
-App colors aren't brand colors. They match each app's own design: Narrative Studio `#52B788`, Guide Match `#FF7A3D`, Virtual Claymation Studio `#4A6FE3`, Premiere Podcast Editing `#3A7FC2` (lightened from `#2E75B6` for contrast). When an app color sits close to a brand color, keep that app out of the matching category's bin.
+App colors aren't brand colors. They match each app's own design: Narrative Studio `#52B788`, Guide Match `#FF7A3D`, Virtual Claymation Studio `#4A6FE3`, Premiere Podcast Editing `#3A7FC2` (lightened from `#2E75B6` for contrast). Light Lab `#F2A93B` (its key-light amber), Premiere Basics Missions `#C98A1E` (a deeper gold, so it doesn't read as Light Lab's amber). When an app color sits close to a brand color, keep that app out of the matching category's bin.
 
 ## Components
 - **Hero:** ink (near-black) block, white Unbounded headline, second line in violet. A full-width category strip along the bottom: one block per category (Studios, Skill builders, Tools, Classroom materials) in the category color, each jumping to its bin on the page. Apps keep their own colors on their cards.
