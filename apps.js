@@ -20,7 +20,7 @@
     tagline     One short line under the title.
     description Two or three sentences. Plain language for students.
     href        Where Open goes. A repo with Pages on is "/<repo-name>/". Anything else: "https://...".
-    kind        Which bin the app goes in: "Studio", "Game", "Tool", or "Material" (see WC_CATEGORIES at the bottom).
+    kind        Which bin the app goes in: "Studio", "Skill builder", "Tool", or "Material" (see WC_CATEGORIES at the bottom).
     tags        Short labels: classes, skills.
     status      "live", "beta" (works, still changing), or "soon" (not clickable yet).
     icon        book, clay, film, camera, pencil, palette, puzzle, sparkle, grid
@@ -95,14 +95,14 @@ window.WC_APPS = [
     description:
       "Drag the right composition guide onto five photos, line it up, then pick the clue that proves it. Three levels per photo.",
     href: "/guide-match/",
-    kind: "Game",
+    kind: "Skill builder",
     tags: ["Photography", "Composition"],
     status: "live",
     icon: "grid",
     color: "#FF7A3D",
     about: {
       summary:
-        "Guide Match is a short game for practicing composition. Students see five photos and work through three levels on each one: name the composition guide, fit it to the photo, then explain why it's the right one.",
+        "Guide Match is a short skill builder for practicing composition. Students see five photos and work through three levels on each one: name the composition guide, fit it to the photo, then explain why it's the right one.",
       students: [
         "Level 1, Match it: drag a guide onto the photo. One point for a right first try.",
         "Level 2, Fit it: move and resize the guide so it lines up. One bonus point.",
@@ -228,7 +228,7 @@ window.WC_APPS = [
 */
 window.WC_CATEGORIES = [
   { kind: "Studio", label: "Studios", color: "#8F7EF2", blurb: "Make something from start to finish." },
-  { kind: "Game",   label: "Games",   color: "#E05A93", blurb: "Practice one skill, fast." },
+  { kind: "Skill builder", label: "Skill builders", color: "#E05A93", blurb: "Practice one skill, fast." },
   { kind: "Tool",   label: "Tools",   color: "#3BA3C2", blurb: "Quick help with one job." },
   { kind: "Material", label: "Classroom materials", color: "#3DB487", blurb: "Handouts and references to keep open while you work." }
 ];

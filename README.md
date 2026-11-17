@@ -1,6 +1,6 @@
 # walshclassroom.com
 
-The hub for Mr. Walsh's classroom apps, games and tools. It's hosted free on GitHub Pages.
+The hub for Mr. Walsh's classroom apps and tools. It's hosted free on GitHub Pages.
 For the design decisions, see [brand/DESIGN.md](brand/DESIGN.md). For how the platform works and the build plan, see [brand/PLATFORM.md](brand/PLATFORM.md).
 
 ## How it works

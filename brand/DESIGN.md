@@ -20,10 +20,10 @@ Six colors, each standing for a part of how a media arts class works. Pick a col
 | Violet (primary) | `#4A35B5` | `#8F7EF2` | Imagination: the idea before anything is made | Logo square, links, focus ring, hero line, Studios |
 | Green | `#0F6B52` | `#3DB487` | Growth: practice turning into skill | Classroom materials |
 | Blue | `#0B5874` | `#3BA3C2` | Guidance: clear help, the teacher explaining | For teachers surfaces, Tools |
-| Raspberry | `#A82E64` | `#E05A93` | Play: the game, the joke | Games, Coming soon, the 404 beard |
+| Raspberry | `#A82E64` | `#E05A93` | Play: practice, the joke | Skill builders, Coming soon, the 404 beard |
 | Rust | `#B34A26` | `#E5784F` | The workshop: work in progress, said honestly | Beta badges, small marks only |
 
-Categories wear their meaning: Studios = Imagination, Games = Play, Tools = Guidance, Classroom materials = Growth. Rust is the one still open (fits a projects or works-in-progress category). Don't invent a new color for a category.
+Categories wear their meaning: Studios = Imagination, Skill builders = Play, Tools = Guidance, Classroom materials = Growth. Rust is the one still open (fits a projects or works-in-progress category). Don't invent a new color for a category.
 
 ## Color in use
 | Role | Light | Dark | Use |
@@ -37,12 +37,12 @@ Categories wear their meaning: Studios = Imagination, Games = Play, Tools = Guid
 App colors aren't brand colors. They match each app's own design: Narrative Studio `#52B788`, Guide Match `#FF7A3D`, Virtual Claymation Studio `#4A6FE3`, Premiere Podcast Editing `#3A7FC2` (lightened from `#2E75B6` for contrast). When an app color sits close to a brand color, keep that app out of the matching category's bin.
 
 ## Components
-- **Hero:** ink (near-black) block, white Unbounded headline, second line in violet. A full-width category strip along the bottom: one block per category (Studios, Games, Tools, Classroom materials) in the category color, each jumping to its bin on the page. Apps keep their own colors on their cards.
+- **Hero:** ink (near-black) block, white Unbounded headline, second line in violet. A full-width category strip along the bottom: one block per category (Studios, Skill builders, Tools, Classroom materials) in the category color, each jumping to its bin on the page. Apps keep their own colors on their cards.
 - **Wordmark lockup:** solid "WC" square joined to an outlined "Walsh Classroom" box.
 - **Borders:** 1.5px solid ink. Square corners throughout; no pills, no hairlines.
 - **App cards:** full app-color block on top with initials in Unbounded, a 1.5px ink rule under it, title in Young Serif, short description, category label, and a solid ink "Open" button.
 - **Buttons and active filters:** solid ink blocks.
-- **Category bins:** the app grid is grouped by category. Each bin has a 10px bar in the category color, a heading, and a one-line blurb. Category colors live in `WC_CATEGORIES` in apps.js: Studios #8F7EF2, Games #E05A93, Tools #3BA3C2, Classroom materials #3DB487.
+- **Category bins:** the app grid is grouped by category. Each bin has a 10px bar in the category color, a heading, and a one-line blurb. Category colors live in `WC_CATEGORIES` in apps.js: Studios #8F7EF2, Skill builders #E05A93, Tools #3BA3C2, Classroom materials #3DB487.
 - **Status badges:** Beta / Coming soon. No standing "More on the way" tile.
 - **Line icons:** kept.
 - **Hover:** slight lift; none with reduced motion.

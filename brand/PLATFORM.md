@@ -9,7 +9,7 @@ Working record from the design pass (Nov 2026). Companion to DESIGN.md. Not buil
    - Students join classes and see the work assigned to them.
    - Teachers can open a read-only view of a student's work.
 3. **What goes on the hub:** apps for now. Later, other resources such as handouts and reference pages.
-4. **Grouping:** by type (App / Game / Tool). This drives the filters.
+4. **Grouping:** by type (now Studios, Skill builders, Tools, Classroom materials; "Games" was renamed Skill builders on Nov 17 2026 so school filters don't read the site as games).
 5. **Visibility** is tied to accounts: some apps or items are public, some need sign-in, some are only for classes they're assigned to, some are teacher-only, and some are hidden.
 6. **Explainers:**
    - For teachers deciding whether to use an app: one page per app.
