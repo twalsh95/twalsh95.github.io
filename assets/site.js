@@ -57,7 +57,7 @@
     footer.innerHTML =
       '<div class="wrap"><span class="mark" aria-hidden="true"></span>' +
       "<p>Made by Tom Walsh for his media arts classes.<br>No ads, no subscriptions. &copy; " + new Date().getFullYear() + "</p>" +
-      '<nav aria-label="Footer">' + '<a href="/">Apps</a><a href="/teachers/">For teachers</a><a href="/help/">Help</a><a href="/privacy/">Privacy</a><a href="/privacy/schools/">For schools</a></nav></div>';
+      '<nav aria-label="Footer">' + '<a href="/">Apps</a><a href="/teachers/">For teachers</a><a href="/help/">Help</a><a href="/privacy/">Privacy</a><a href="/privacy/schools/">For schools</a><a href="https://claude.ai/artifact/5XgMEsDNj5RAhG1GU3Exor">Brand guide</a></nav></div>';
   }
 
   // ---------- App cards ----------
