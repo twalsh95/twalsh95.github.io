@@ -130,18 +130,17 @@
     "a{color:inherit;text-decoration:none;display:flex;align-items:center;gap:8px;padding:0 14px}" +
     "a:hover{background:#fff;color:#0B0B0C}" +
     "a:focus-visible{outline:3px solid #8F7EF2;outline-offset:-3px}" +
-    ".home{padding:0 14px 0 0;gap:0}" +
-    ".home:hover{background:none;color:#fff}.home:hover .word{background:#fff;color:#0B0B0C}" +
-    ".sq{width:" + (BAR_H - 3) + "px;height:100%;background:#4A35B5;display:grid;place-items:center}" +
-    ".mk{width:20px;height:28px;background:#fff;-webkit-mask:url(" + ORIGIN + "/assets/logo/beard-mark-simple.svg) center/contain no-repeat;mask:url(" + ORIGIN + "/assets/logo/beard-mark-simple.svg) center/contain no-repeat}" +
-    ".word{font:800 12px/1 Unbounded,'Arial Black',sans-serif;letter-spacing:.06em;text-transform:uppercase;padding:0 12px;height:100%;display:flex;align-items:center}" +
+    ".home{padding:0 14px 0 10px;gap:0}" +
+    ".home:hover{background:none}.home:hover .wm{opacity:.85}" +
+    ".wm{display:block;height:28px;width:auto}" +
     ".app{display:flex;align-items:center;gap:8px;padding:0 14px;border-left:1.5px solid #3A3A3E;min-width:0}" +
     ".dot{width:12px;height:12px;background:var(--c,#4A35B5);flex:none}" +
     ".name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
     ".right{margin-left:auto;display:flex}" +
     ".right a{border-left:1.5px solid #3A3A3E}" +
     ".acct span{max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
-    "@media (max-width:640px){.word{display:none}.right .all span{display:none}.acct span{max-width:96px}}";
+    "@media (max-width:640px){.wm{height:22px}.right .all span{display:none}.acct span{max-width:96px}}" +
+    "@media (max-width:480px){.app .name{display:none}.app{padding:0 12px}}";
 
   function draw(cur) {
     var host = document.createElement("div");
@@ -152,7 +151,7 @@
     root.innerHTML =
       "<style>" + CSS + "</style>" +
       '<nav class="bar" style="--c:' + color + '" aria-label="Walsh Classroom">' +
-      '<a class="home" href="' + ORIGIN + '/" title="Walsh Classroom home"><span class="sq"><span class="mk"></span></span><span class="word">Walsh Classroom</span></a>' +
+      '<a class="home" href="' + ORIGIN + '/" title="Walsh Classroom home"><img class="wm" src="' + ORIGIN + '/assets/logo/walshclassroom-wordmark-violet-dark.svg" alt="walshclassroom" width="128" height="28"></a>' +
       (cur ? '<span class="app"><span class="dot"></span><span class="name"></span></span>' : "") +
       '<span class="right"><a class="acct" href="' + signInUrl() + '"><span>Log in</span></a><a href="' + helpHref + '">Help</a>' +
       '<a class="all" href="' + ORIGIN + '/">&#8592;<span>All apps</span></a></span></nav>';
