@@ -6,10 +6,13 @@ Working record from the design pass (Nov 2026). The full brand guide (tokens, lo
 Clean and modern with a little quirk. Committed color and hard contrast, with no pastels and no
 "AI default" softness. The quirk comes from type, the mascot and copy, not from themed gimmicks.
 
-## Type
-- Headings and wordmark: **Unbounded** (700/800)
-- Accents (card titles, small flourishes): **Young Serif**
-- Body: **Atkinson Hyperlegible**
+## Type (changed Nov 18 2026, with Tom's new wordmark)
+Young Serif is now the brand's lead face. Each family has one job:
+- **Wordmark and headings:** **Young Serif** (400). Section and bin headings (`h2`), prose `h2`, app names on cards.
+- **Titles:** **Unbounded** (800). The hero and page titles (`h1`), card initials, class codes. Short punchy lines only.
+- **Subheadings and labels:** **Schibsted Grotesk** (700). Prose `h3`, bin blurbs, card taglines, and every uppercase label: eyebrows, badges, the category strip, table and form labels. Labels at .06 to .08em tracking.
+- **Body:** **Atkinson Hyperlegible** (400/700). Everything students read.
+Chosen from a side-by-side specimen (Atkinson Hyperlegible Next Bold was the runner-up): https://claude.ai/artifact/1kZie4GLhtHMupV7Lx7931
 
 ## Brand palette
 Six colors, each standing for a part of how a media arts class works. Pick a color for something new by its meaning first. Deep values are for light mode; bright values are for fills under dark text and for dark mode. Cool colors lead; raspberry and rust are accents.
@@ -49,7 +52,8 @@ App colors aren't brand colors. They match each app's own design: Narrative Stud
 - **Theme:** follows the device, with a toggle that remembers the choice.
 
 ## Logo
-- Primary: the lockup (violet beard square joined to the boxed "WALSH CLASSROOM" in Unbounded 800), outlined: `assets/logo/walsh-classroom-logo.svg`, `-dark`, `-solid`.
+- Primary (Nov 18 2026): **Tom's wordmark**. Lowercase "walshclassroom" in Young Serif, split across an outlined white field ("walsh" in color, with the beard pressed against the left border) and a solid color block ("classroom" in white). The overlap at the h/c seam is deliberate: each half grows out of the other. Files: `assets/logo/walshclassroom-wordmark-violet.svg` (the brand mark, in the site header), plus `-green`, `-rust`, `-raspberry`. Rebuilt from Tom's Canva file so the frame and block share one top and bottom edge; outline 3.75 units. Violet is primary for now; green is Tom's favorite and a possible future primary. Dark versions (`-dark.svg`, all four colors) follow the dark-theme rule: the left field is see-through, "walsh", the beard and the outline use the color's bright value, and "classroom" is near-black (#0B0B0C) on the bright block (white on the bright values would fall to about 3:1). The site header swaps between the two with the theme, including the site's own toggle.
+- Previous lockup (violet beard square joined to the boxed "WALSH CLASSROOM" in Unbounded 800), kept for reference: `assets/logo/walsh-classroom-logo.svg`, `-dark`, `-solid`.
 - Tile: `walsh-classroom-tile.svg` and `-dark` for avatars and app icons.
 - Secondary: the beard mark, redrawn as one-color vector with the strands cut out: `beard-mark-ink.svg`, `-white`, `-violet`; `beard-mark-simple.svg` below 48px.
 - Favicon: `favicon.svg`, the simple mark on a violet tile, switching for dark mode.
