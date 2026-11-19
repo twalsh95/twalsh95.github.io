@@ -40,7 +40,7 @@ Categories wear their meaning: Studios = Imagination, Skill builders = Play, Too
 App colors aren't brand colors. They match each app's own design: Narrative Studio `#52B788`, Guide Match `#FF7A3D`, Virtual Claymation Studio `#4A6FE3`, Premiere Podcast Editing `#3A7FC2` (lightened from `#2E75B6` for contrast). Light Lab `#F2A93B` (its key-light amber), Premiere Basics Missions `#C98A1E` (a deeper gold, so it doesn't read as Light Lab's amber). When an app color sits close to a brand color, keep that app out of the matching category's bin.
 
 ## Components
-- **Hero:** ink (near-black) block, white Unbounded headline, second line in violet. A full-width category strip along the bottom: one block per category (Studios, Skill builders, Tools, Classroom materials) in the category color, each jumping to its bin on the page. Apps keep their own colors on their cards.
+- **Hero:** follows the theme (Nov 19 2026). Light: white with an ink Unbounded headline, second line and beard in deep violet. Dark: brand ink `#0B0B0C` (not pure black) with a light headline, second line and beard in bright violet. A full-width category strip along the bottom: one block per category (Studios, Skill builders, Tools, Classroom materials) in the category color, each jumping to its bin on the page. Apps keep their own colors on their cards.
 - **Wordmark lockup:** solid "WC" square joined to an outlined "Walsh Classroom" box.
 - **Borders:** 1.5px solid ink. Square corners throughout; no pills, no hairlines.
 - **App cards:** full app-color block on top with initials in Unbounded, a 1.5px ink rule under it, title in Young Serif, short description, category label, and a solid ink "Open" button.
