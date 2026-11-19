@@ -56,7 +56,7 @@ App colors aren't brand colors. They match each app's own design: Narrative Stud
 - Previous lockup (violet beard square joined to the boxed "WALSH CLASSROOM" in Unbounded 800), kept for reference: `assets/logo/walsh-classroom-logo.svg`, `-dark`, `-solid`.
 - Tile: `walsh-classroom-tile.svg` and `-dark` for avatars and app icons.
 - Secondary: the beard mark, redrawn as one-color vector with the strands cut out: `beard-mark-ink.svg`, `-white`, `-violet`; `beard-mark-simple.svg` below 48px.
-- Favicon (Nov 18 2026): `favicon.svg`, your "w" from the wordmark straddling the same split (white field with violet "w", violet block with white "w"), with a dark-mode version built in. The previous beard-tile favicon is kept as `assets/logo/favicon-beard.svg`. The app bar inside every app shows the dark wordmark.
+- Monogram and favicon (Nov 19 2026): Tom's "wc" mark, the wordmark's split in a square: outlined white field with "w" in color, solid block with "c" in white (dark: black field, bright color, "c" in #0B0B0C). Files: `assets/logo/wc-mark-{violet,green,rust,raspberry}.svg` and `-dark.svg`, drawn exactly as Tom's file, for app icons and avatars. `favicon.svg` is the violet mark tuned for browser tabs: the outline is exactly 1px at 16px (1/16 of the square) and the block edge sits on the pixel grid, so it stays sharp; it switches to the dark version with the device theme. The beard-tile favicon is kept as `assets/logo/favicon-beard.svg`. The app bar inside every app shows the dark wordmark.
 
 ## Copy
 - 404: "This scene didn't make the final cut," with the mascot.

@@ -24,7 +24,7 @@
     header.className = "site-header";
     header.innerHTML =
       '<div class="wrap">' +
-      '<a class="lockup" href="/" aria-label="walshclassroom home"><img class="wordmark wm-light" src="/assets/logo/walshclassroom-wordmark-violet.svg" alt="" width="196" height="43"><img class="wordmark wm-dark" src="/assets/logo/walshclassroom-wordmark-violet-dark.svg" alt="" width="196" height="43"></a>' +
+      '<a class="lockup" href="/" aria-label="walshclassroom home"><img class="wordmark wm-light" src="/assets/logo/walshclassroom-wordmark-violet.svg" alt="" width="200" height="44"><img class="wordmark wm-dark" src="/assets/logo/walshclassroom-wordmark-violet-dark.svg" alt="" width="200" height="44"></a>' +
       '<nav class="nav" aria-label="Main">' + navLink("/", "Apps", "apps-link") + navLink("/classes/", "Classes", "opt") + navLink("/teachers/", "For teachers", "opt") + navLink("/help/", "Help") + "</nav>" +
       '<a class="login" id="login-btn" href="/account/"' + (here.indexOf("/account/") === 0 ? ' aria-current="page"' : "") + '><span>Log in</span></a>' +
       '<button class="icon-btn" id="theme-btn" type="button"></button>' +
