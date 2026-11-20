@@ -35,7 +35,7 @@ This was chosen over wrapping apps in an iframe, which would break deep links, f
 
 ### Roles
 - Each user has a profile at `users/{uid}/profile/main` (the one Narrative Studio already kept) with `role: student | teacher`, plus `isAdmin` and `isMaster` flags. The Firestore rules (`platform/firestore.rules`) stop anyone setting their own role; Tom's account is the master, by account ID.
-- **Teacher accounts:** an account whose email ends in `.org` or `.edu` becomes a teacher on sign-up, once it has confirmed the email (Firebase sends a link, and `email_verified` must be true). The Firestore rules enforce this from the sign-in token (`request.auth.token.email` and `request.auth.token.email_verified`), so the app alone can't grant it. Anyone else (another domain, or a student account that needs teacher tools) gets an invite code from Tom, who asks at help@walshclassroom.com. Students at ACS have `.charter` emails, so they don't match. Accepted risk: some schools give students `.org` or `.edu` addresses; Tom can demote an account from the admin panel. This needs no paid plan or Cloud Functions.
+- **Teacher accounts:** an account on an allowed staff domain (today only `atlantiscs.org`) becomes a teacher on sign-up, once it has confirmed the email (Firebase sends a link, and `email_verified` must be true). The Firestore rules enforce this from the sign-in token (`request.auth.token.email` and `request.auth.token.email_verified`), so the app alone can't grant it. The domain list lives in two places that must match: `TEACHER_DOMAINS` in `platform/auth.js` and `confirmedTeacherEmail()` in `platform/firestore.rules`; adding a school means editing both and publishing the rules. Anyone else (another school, or a student account that needs teacher tools) gets an invite code from Tom, who asks at help@walshclassroom.com. ACS students use `@atlantischarter.school`, so they don't match. Until Nov 20 2026 any confirmed `.org`/`.edu` email qualified; it was narrowed because some schools give students `.org` addresses. This needs no paid plan or Cloud Functions.
 - **Student accounts:** students sign up with email and password and join a class with a join code.
 
 ### Data model (sketch)
@@ -65,7 +65,7 @@ The code of every app is public on GitHub Pages; only listing and data access ca
 
 ## Locked (Tom, Nov 5 2026)
 - The platform uses **Narrative Studio's Firebase project**, so existing accounts and work carry over.
-- **Teacher access** (changed Nov 12 2026): verified `.org` and `.edu` emails become teachers on sign-up; everyone else uses an invite code from Tom.
+- **Teacher access** (changed Nov 20 2026): verified `atlantiscs.org` emails become teachers on sign-up; everyone else uses an invite code from Tom. (Nov 12 to Nov 20 it was any verified `.org`/`.edu` email.)
 - **Student accounts:** students sign up themselves, then join a class with a class code.
 - The architecture above is accepted.
 

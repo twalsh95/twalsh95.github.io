@@ -32,9 +32,13 @@ const CONFIG = {
 const app = getApps().length ? getApp() : initializeApp(CONFIG);
 const auth = getAuth(app);
 
-// Teacher emails: .org and .edu (confirmed by email link). See brand/PLATFORM.md.
+// Staff domains whose confirmed emails become teachers by themselves. Everyone else
+// uses an invite code. Keep in step with confirmedTeacherEmail() in platform/firestore.rules
+// (adding a school means editing both and publishing the rules). See brand/PLATFORM.md.
+const TEACHER_DOMAINS = ["atlantiscs.org"];
 export function isTeacherEmail(email) {
-  return /\.(org|edu)$/i.test(String(email || "").split("@")[1] || "");
+  const domain = (String(email || "").split("@")[1] || "").toLowerCase();
+  return TEACHER_DOMAINS.includes(domain);
 }
 
 // The profile Narrative Studio keeps: users/{uid}/profile/main.
@@ -67,7 +71,7 @@ function shape(u, p) {
   };
 }
 
-// A confirmed .org/.edu email becomes a teacher. The security rules check the
+// A confirmed staff email (TEACHER_DOMAINS) becomes a teacher. The security rules check the
 // email and the confirmation themselves (platform/firestore.rules), so this can't
 // promote anyone the rules wouldn't.
 async function promoteIfTeacherEmail(u, p) {

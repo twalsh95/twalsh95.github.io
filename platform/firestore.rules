@@ -18,6 +18,10 @@
 // Phase 3.1 (published Nov 20 2026): classes are no longer readable by
 // every signed-in account. Join codes move to classCodes/{code} (look up, never list),
 // and students find their classes through enrollments/{classroomId}_{uid}.
+//
+// Teacher allow-list (Nov 20 2026): only confirmed emails on an allowed school domain
+// (today: atlantiscs.org) become teachers by themselves. Before, any confirmed .org/.edu
+// email did, which let students at other schools with .org addresses in.
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -32,11 +36,14 @@ service cloud.firestore {
     function hasProfile() { return signedIn() && exists(profilePath(me())); }
     function isAdmin() { return isMaster() || (hasProfile() && myProfile().get('isAdmin', false) == true); }
     function isTeacher() { return isAdmin() || (hasProfile() && myProfile().get('role', 'student') == 'teacher'); }
-    // A school email that its owner has confirmed by clicking Firebase's link.
+    // A staff email from an allowed school domain, confirmed by clicking Firebase's link.
+    // Allowed domains (keep in step with TEACHER_DOMAINS in platform/auth.js):
+    //   atlantiscs.org — ACS staff (students are @atlantischarter.school)
+    // Everyone else becomes a teacher with an invite code.
     function confirmedTeacherEmail() {
       return signedIn()
         && request.auth.token.email_verified == true
-        && request.auth.token.email.lower().matches('.*[.](org|edu)$');
+        && request.auth.token.email.lower().matches('.*@atlantiscs[.]org$');
     }
     function changed() { return request.resource.data.diff(resource.data).affectedKeys(); }
 
@@ -45,7 +52,7 @@ service cloud.firestore {
       allow read: if signedIn() && (me() == uid || isTeacher());
 
       // Your own profile, on first sign-in. You start as a student, or as a teacher
-      // if your .org/.edu email is confirmed. Never admin or master.
+      // if your staff email (an allowed school domain) is confirmed. Never admin or master.
       allow create: if signedIn() && me() == uid
         && request.resource.data.get('isAdmin', false) == false
         && request.resource.data.get('isMaster', false) == false

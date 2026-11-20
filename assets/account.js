@@ -99,7 +99,7 @@ const ROLE = { student: "Student", teacher: "Teacher", admin: "Admin" };
 function showUser(u) {
   title.textContent = "You're logged in.";
   lede.textContent = "This account works in every app on Walsh Classroom.";
-  // Only for a .org/.edu account that isn't a teacher yet and hasn't confirmed its email.
+  // Only for a staff-domain account (TEACHER_DOMAINS) that isn't a teacher yet and hasn't confirmed its email.
   const confirmNote = u.teacherEmail && !u.emailVerified && u.role === "student"
     ? '<div class="callout"><p><strong>Teachers: confirm your email.</strong> Teacher tools switch on once ' + esc(u.email) +
       " is confirmed. Click the link in the email we send you.</p>" +
