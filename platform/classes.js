@@ -90,6 +90,9 @@ function commit(changes) {
   return call("POST", ROOT + ":commit", { writes });
 }
 
+// The same plumbing, for platform/assignments.js (Phase 4).
+export const rest = { getDoc, query, where, and, commit };
+
 // ---------- Who's asking ----------
 async function me() {
   const u = await A.user();

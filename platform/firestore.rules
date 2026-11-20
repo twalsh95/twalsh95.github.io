@@ -22,6 +22,9 @@
 // Teacher allow-list (Nov 20 2026): only confirmed emails on an allowed school domain
 // (today: atlantiscs.org) become teachers by themselves. Before, any confirmed .org/.edu
 // email did, which let students at other schools with .org addresses in.
+//
+// Phase 4 (published Nov 20 2026; 38 emulator tests passed): assignments under classrooms/{id}/assignments, with one
+// submission per student under each. See brand/PLATFORM.md.
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -201,6 +204,52 @@ service cloud.firestore {
           && request.resource.data.ownerUid == me()
           && entryId == me() + '_' + request.resource.data.projectId;
         allow delete: if signedIn() && (resource.data.ownerUid == me() || isMaster() || teachesThis());
+      }
+
+      // Assignments (Phase 4). The class's teacher (and Tom) write them; students in the
+      // class read posted ones only, so a student's query must ask for posted == true.
+      match /assignments/{assignmentId} {
+        allow read: if signedIn() && (teachesThis() || isMaster() || (inThis() && resource.data.posted == true));
+        allow create, update: if signedIn() && (teachesThis() || isMaster())
+          && request.resource.data.teacherUid == get(classPath(classroomId)).data.teacherUid
+          && request.resource.data.title is string
+          && request.resource.data.title.size() > 0 && request.resource.data.title.size() <= 200
+          && request.resource.data.posted is bool;
+        allow delete: if signedIn() && (teachesThis() || isMaster());
+
+        // One submission per student: submissions/{studentUid}. The student turns in,
+        // unsubmits and turns in again; the teacher marks it returned with a note.
+        // Students never see each other's.
+        match /submissions/{uid} {
+          function assignmentPosted() {
+            return get(/databases/$(database)/documents/classrooms/$(classroomId)/assignments/$(assignmentId)).data.posted == true;
+          }
+          // Attached work is a link, or a path inside the student's own folder.
+          function validAttachment(a) {
+            return a == null
+              || (a.kind == 'link' && a.url is string && a.url.size() <= 2000 && a.url.matches('https?://.+'))
+              || (a.kind == 'project' && a.path is string && a.path.size() <= 500
+                  && a.path.matches('users/' + me() + '/[^/]+/.+'));
+          }
+          function validStudentWrite() {
+            return request.resource.data.uid == me()
+              && request.resource.data.status in ['turnedIn', 'unsubmitted']
+              && validAttachment(request.resource.data.get('attachment', null));
+          }
+          allow read: if signedIn() && (me() == uid || teachesThis() || isMaster());
+          allow create: if signedIn() && me() == uid && inThis() && assignmentPosted()
+            && request.resource.data.keys().hasOnly(['uid', 'studentName', 'status', 'turnedInAt', 'attachment', 'updatedAt'])
+            && validStudentWrite();
+          allow update: if signedIn() && me() == uid && inThis() && assignmentPosted()
+            && changed().hasOnly(['studentName', 'status', 'turnedInAt', 'attachment', 'updatedAt'])
+            && validStudentWrite();
+          // The teacher returns it, with an optional short note.
+          allow update: if signedIn() && (teachesThis() || isMaster())
+            && changed().hasOnly(['returned', 'note', 'returnedAt'])
+            && request.resource.data.get('note', '') is string
+            && request.resource.data.get('note', '').size() <= 2000;
+          allow delete: if signedIn() && (teachesThis() || isMaster());
+        }
       }
     }
 

@@ -27,7 +27,12 @@
   Classes (Phase 3, from platform/classes.js, loaded on first use):
     wc.classes()     Promise of {user, teaching: [...], enrolled: [...]} for the signed-in person.
                      Each class: {id, name, code, teacherName, apps: [app ids], students (teaching only)}
-  Coming in Phase 4: wc.assignments().
+  Assignments (Phase 4, from platform/assignments.js, loaded on first use):
+    wc.assignments()         Promise of the module. Students: .mine({appId}), .turnIn(classId, id, attachment),
+                             .unsubmit(classId, id). Teachers: .forClass(classId), .save(classId, fields),
+                             .submissions(classId, id), .giveBack(classId, id, studentUid, note).
+                             .state(assignment, submission) and .LABELS say where a submission stands.
+    wc.assignmentsDue({appId})  Promise of the signed-in student's posted assignments ([] if signed out).
 */
 (function () {
   "use strict";
@@ -109,6 +114,17 @@
     if (!classesMod) classesMod = import(ORIGIN + "/platform/classes.js");
     return classesMod.then(function (m) { return m.mine(); }, function () { return { user: null, teaching: [], enrolled: [] }; });
   }
+  var assignmentsMod = null;
+  function assignments() {
+    if (!assignmentsMod) assignmentsMod = import(ORIGIN + "/platform/assignments.js");
+    return assignmentsMod;
+  }
+  function assignmentsDue(opts) {
+    return user().then(function (u) {
+      if (!u) return [];
+      return assignments().then(function (m) { return m.mine(opts || {}); });
+    }).catch(function () { return []; });
+  }
   function signInUrl(next) {
     var here = next || (location.pathname + location.search + location.hash);
     return ORIGIN + "/account/?next=" + encodeURIComponent(here);
@@ -117,7 +133,8 @@
   window.wc = {
     __loaded: true, apps: apps, app: app, current: current, origin: ORIGIN,
     user: user, role: role, onAuth: onAuth, signOut: signOut, signInUrl: signInUrl, auth: auth,
-    classes: classes, classesModule: function () { return classesMod || (classesMod = import(ORIGIN + "/platform/classes.js")); }
+    classes: classes, classesModule: function () { return classesMod || (classesMod = import(ORIGIN + "/platform/classes.js")); },
+    assignments: assignments, assignmentsDue: assignmentsDue
   };
 
   // ---------- The bar ----------

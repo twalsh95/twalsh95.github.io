@@ -113,3 +113,35 @@ Narrative Studio's `classrooms` become the site's classes. Same data, nothing mo
 **Moved out of Phase 3:** the admin mail panel (its own project: a Cloudflare Worker plus an email service).
 
 **Before other teachers' students join:** the ACS student data privacy check (see Still to check).
+
+## Phase 4: assignments, design (agreed Nov 20 2026)
+Tom posts an assignment to a class, students see it and turn work in, and Tom sees who turned in what.
+
+**Decisions (Tom, Nov 20 2026)**
+- **Turning in** = a Turn in button, with optional attached work: a project from the student's own workspace (e.g. a Narrative Studio project) or a link.
+- **Where:** the hub (Classes page and signed-in home page) **and** Narrative Studio, in this phase.
+- **Undo:** a student can unsubmit and turn in again **any time**. The teacher sees the latest turn-in time.
+- **Feedback:** the teacher can mark a submission **returned** and leave a **short note** the student sees. No scores; grades stay in Tom's gradebook. Passage comments in Narrative Studio carry on as before.
+
+**Data** (under the class, so the existing `inThis()` / `teachesThis()` rule helpers apply; this replaces the top-level `assignments/{id}` in the sketch above)
+| Path | Fields |
+|---|---|
+| `classrooms/{cid}/assignments/{aid}` | title, instructions, appId (or null = any), link (optional), dueAt (optional), posted (draft until true), teacherUid, createdAt, updatedAt |
+| `classrooms/{cid}/assignments/{aid}/submissions/{uid}` | status (`turnedIn` or `unsubmitted`), turnedInAt, attachment (`{kind:"project", appId, path, title}` or `{kind:"link", url}` or null), returned, note, returnedAt |
+
+Late, missing and resubmitted are worked out, not stored: late = `turnedInAt > dueAt`; missing = posted, past due, no turn-in; resubmitted after return = `turnedInAt > returnedAt`.
+
+**Rules (to write, test, and show Tom before publishing)**
+- Assignments: the class's teacher and Tom read and write. Students in the class read **posted** ones only (their query must say `posted == true`).
+- Submissions: a student creates or updates **only their own** (`{uid}` = them), only while in the class and only for a posted assignment, and can change only status, turnedInAt and attachment. An attached project path must start with `users/{their uid}/`, so nobody can point at someone else's work.
+- The teacher reads every submission in their class and can change only returned, note and returnedAt. Students never see classmates' submissions.
+- Deleting an assignment deletes its submissions from the app (Firestore doesn't cascade). Submissions stay when a student leaves a class, so the teacher keeps the record.
+
+**What gets built**
+1. `platform/assignments.js`, loaded by `wc.js` like `classes.js` (REST, the person's own token): list, create, post, edit, delete (teacher); list mine, turn in, unsubmit (student); return with a note (teacher). Exposed as `wc.assignments` for any app.
+2. Hub teacher view (`/classes/`, per class): an Assignments list with "N of M turned in", a new/edit form (title, instructions, app from the class's apps, optional link, optional due date, Save draft / Post), and an assignment page: the roster with status (turned in, late, missing, returned), time, a link to open the attached work, and Return with a note.
+3. Hub student view: each class lists To do / Turned in / Returned (with the note); the assignment page has Turn in (attach a project or a link) and Unsubmit. The signed-in home page gets "Due soon" for students and "To review" counts for teachers.
+4. Narrative Studio: a "Turn in" action in a project, listing posted assignments for that student's classes whose app is Narrative Studio or any; it attaches the open project through `wc.assignments`. The teacher's attachment link opens the existing read-only student workspace.
+5. Live test with a fresh test student account (and delete it afterwards, as on Nov 20).
+
+**Not in Phase 4:** scores and grades, notifications or email to students, scheduled posting, other apps' Turn in buttons (any app can add one later through `wc.assignments`).
