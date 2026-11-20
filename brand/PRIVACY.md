@@ -15,7 +15,7 @@ Written Nov 17 2026. Not legal advice: have ACS (or a district's privacy officer
 - **If a new app adds analytics, AI, a new service provider, or a new kind of data, update both pages first.**
 
 ## Tom's to-do
-1. **Confirm where Firebase stores data.** Firebase console > Project settings > General > "Default GCP resource location". If it's in the US (e.g. `nam5` or `us-east1`), add "stored in the United States" to both pages; districts often ask.
+1. ~~**Confirm where Firebase stores data.**~~ Done Nov 20 2026: Firestore is in `nam5` (Google Cloud's US multi-region). Both pages now say the data is stored in the United States.
 2. **Read both pages and agree to the commitments** in them, especially: deleting within 30 days, signing district agreements, and the Exhibit E general offer.
 3. **Have ACS review** the policy (the tech director or whoever handles student data privacy).
 4. **Sign the first agreement with ACS.** Massachusetts districts use the Student Data Privacy Consortium (SDPC) Massachusetts agreement (sdpc.a4l.org). ACS starts it; you sign as the provider; tick Exhibit E so other districts can adopt it. Once signed, it appears in the SDPC registry, which is what other districts search when vetting a site.
