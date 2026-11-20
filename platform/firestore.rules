@@ -1,8 +1,8 @@
 // Firestore security rules for the narrative-studio-backend project (shared by every Walsh Classroom app).
 //
-// LIVE since Nov 13 2026 (Phase 3), published in the Firebase console. Keep this file in
+// LIVE since Nov 20 2026 (Phase 3.1), published in the Firebase console. Keep this file in
 // step with the console: a change here does nothing until it is published there.
-// The Phase 2 version is in git history (commit e8b2a4d).
+// Earlier versions are in git history (Phase 2: e8b2a4d; Phase 3: abfd5c8).
 //
 // Phase 2: roles are protected (a confirmed .org/.edu email or an invite code makes a
 // teacher; only admins promote; only the master sets "master"); invite codes, comment
@@ -15,7 +15,7 @@
 //   3. classrooms/{id}/shared: the projects students share with their class, readable
 //      by the class, so classmate sharing no longer needs the roster.
 //
-// Phase 3.1 (DRAFT, Nov 19 2026, not yet published): classes are no longer readable by
+// Phase 3.1 (published Nov 20 2026): classes are no longer readable by
 // every signed-in account. Join codes move to classCodes/{code} (look up, never list),
 // and students find their classes through enrollments/{classroomId}_{uid}.
 rules_version = '2';
