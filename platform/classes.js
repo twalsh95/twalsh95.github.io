@@ -10,9 +10,15 @@
 
   Data:
     classrooms/{id}                 name, code, teacherUid, teacherName, apps[], archived
-    classrooms/{id}/members/{uid}   displayName, email, joinedAt
+    classrooms/{id}/members/{uid}   displayName, email, code, joinedAt
     classrooms/{id}/shared/{uid_projectId}   projects a student shares with the class
     classAccess/{teacherUid}_{studentUid}    lets that teacher read that student's work
+    classCodes/{code}               classroomId, teacherUid (Phase 3.1: look up by code, never list)
+    enrollments/{classroomId}_{uid} classroomId, uid, teacherUid (Phase 3.1: a student's own classes)
+
+  Phase 3.1: classes are readable only by their teacher, their students and Tom. Until
+  the Phase 3.1 rules are published, every function here falls back to the old way
+  (listing classes) when the new collections are refused, so it works under both.
 */
 import * as A from "./auth.js";
 
@@ -102,28 +108,95 @@ export function normalizeCode(raw) {
   return s.length === 8 ? s.slice(0, 4) + "-" + s.slice(4) : String(raw || "").toUpperCase().trim();
 }
 
+// ---------- Phase 3.1 records ----------
+const enrollmentKey = (classId, uid) => "enrollments/" + classId + "_" + uid;
+function setCode(c) {
+  return commit([{ set: "classCodes/" + c.code, data: { classroomId: c.id, teacherUid: c.teacherUid } }]);
+}
+function setEnrollment(classId, uid, teacherUid) {
+  return commit([{ set: enrollmentKey(classId, uid), data: { classroomId: classId, uid, teacherUid }, stamp: ["updatedAt"] }]);
+}
+
 // ---------- Reading ----------
 // Classes I teach, newest first, with student counts.
 export async function teaching({ includeArchived = false } = {}) {
   const u = await me();
   if (!isTeacher(u)) return [];
-  const list = await query("", { from: [{ collectionId: "classrooms" }], where: where("teacherUid", u.uid) });
-  const out = list.filter((c) => includeArchived || !c.archived);
+  const all = await query("", { from: [{ collectionId: "classrooms" }], where: where("teacherUid", u.uid) });
+  const out = all.filter((c) => includeArchived || !c.archived);
+  const rosters = {};
   await Promise.all(out.map(async (c) => {
     c.apps = c.apps || [];
-    try { c.students = (await roster(c.id)).length; } catch (e) { c.students = null; }
+    try { rosters[c.id] = await roster(c.id); c.students = rosters[c.id].length; } catch (e) { c.students = null; }
     // Older classes (made in Narrative Studio) have no teacherName; fill it in so students can see it.
     if (!c.teacherName && u.name) {
       c.teacherName = u.name;
       commit([{ set: "classrooms/" + c.id, data: { teacherName: u.name }, merge: true }]).catch(() => {});
     }
   }));
+  ensureTeacherRecords(u, all, rosters).catch(() => {});
   return out.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+}
+
+// Fill in Phase 3.1 records for classes made before them: a join code for every open
+// class, and an enrollment for every student on a roster. Quietly does nothing until
+// the Phase 3.1 rules are published.
+async function ensureTeacherRecords(u, classes, rosters) {
+  for (const c of classes) {
+    if (c.archived || !c.code) continue;
+    const have = await getDoc("classCodes/" + c.code);
+    if (!have) await setCode(c);
+  }
+  const existing = new Set((await query("", { from: [{ collectionId: "enrollments" }], where: where("teacherUid", u.uid) }))
+    .map((e) => e.classroomId + "_" + e.uid));
+  for (const c of classes) {
+    for (const s of rosters[c.id] || []) {
+      if (!existing.has(c.id + "_" + s.uid)) await setEnrollment(c.id, s.uid, c.teacherUid).catch(() => {});
+    }
+  }
 }
 
 // Classes I'm a student in.
 export async function enrolled() {
   const u = await me();
+  let rows;
+  try {
+    rows = await query("", { from: [{ collectionId: "enrollments" }], where: where("uid", u.uid) });
+  } catch (e) {
+    if (e.code === "denied") return enrolledOldWay(u);   // Phase 3.1 rules not published yet
+    throw e;
+  }
+  if (!rows.length) rows = await enrollmentsFromAccess(u);
+  const mine = [];
+  await Promise.all(rows.map(async (e) => {
+    const m = await getDoc("classrooms/" + e.classroomId + "/members/" + u.uid).catch(() => null);
+    if (!m) {   // removed by the teacher since: tidy the stale record
+      commit([{ del: enrollmentKey(e.classroomId, u.uid) }]).catch(() => {});
+      return;
+    }
+    const c = await getDoc("classrooms/" + e.classroomId).catch(() => null);
+    if (c && !c.archived) mine.push(Object.assign(c, { apps: c.apps || [], joinedAt: m.joinedAt }));
+  }));
+  return mine.sort((a, b) => String(a.name).localeCompare(String(b.name)));
+}
+
+// A student who joined before enrollments existed: their teacher-access records name a
+// class they joined. Make the missing enrollments from those.
+async function enrollmentsFromAccess(u) {
+  const access = await query("", { from: [{ collectionId: "classAccess" }], where: where("studentUid", u.uid) }).catch(() => []);
+  const rows = [];
+  for (const a of access) {
+    if (!a.classroomId) continue;
+    const m = await getDoc("classrooms/" + a.classroomId + "/members/" + u.uid).catch(() => null);
+    if (!m) continue;
+    await setEnrollment(a.classroomId, u.uid, a.teacherUid).catch(() => {});
+    rows.push({ classroomId: a.classroomId });
+  }
+  return rows;
+}
+
+// Before the Phase 3.1 rules: list open classes and check each for my membership.
+async function enrolledOldWay(u) {
   const open = await query("", { from: [{ collectionId: "classrooms" }], where: where("archived", false) });
   const mine = [];
   await Promise.all(open.map(async (c) => {
@@ -157,8 +230,7 @@ export async function create({ name, apps }) {
   if (!String(name || "").trim()) throw new Error("Give the class a name.");
   let code = newCode();
   for (let i = 0; i < 5; i++) {
-    const clash = await query("", { from: [{ collectionId: "classrooms" }], where: where("code", code), limit: 1 });
-    if (!clash.length) break;
+    if (!(await codeTaken(code))) break;
     code = newCode();
   }
   const id = Array.from(crypto.getRandomValues(new Uint8Array(10)), (b) => b.toString(36).padStart(2, "0")).join("").slice(0, 20);
@@ -167,13 +239,29 @@ export async function create({ name, apps }) {
     data: { name: name.trim(), code, teacherUid: u.uid, teacherName: u.name || "", apps: apps || [], archived: false, schemaVersion: 1 },
     stamp: ["createdAt", "updatedAt"]
   }]);
+  await setCode({ id, code, teacherUid: u.uid }).catch(() => {});   // refused before Phase 3.1; filled in later
   return { id, name: name.trim(), code, apps: apps || [], students: 0, archived: false };
 }
+async function codeTaken(code) {
+  try { return !!(await getDoc("classCodes/" + code)); }
+  catch (e) {   // before Phase 3.1
+    const clash = await query("", { from: [{ collectionId: "classrooms" }], where: where("code", code), limit: 1 });
+    return clash.length > 0;
+  }
+}
 
-export function update(classId, fields) {
+export async function update(classId, fields) {
   const allowed = {};
   ["name", "apps", "archived"].forEach((k) => { if (k in fields) allowed[k] = fields[k]; });
-  return commit([{ set: "classrooms/" + classId, data: allowed, merge: true, stamp: ["updatedAt"] }]);
+  await commit([{ set: "classrooms/" + classId, data: allowed, merge: true, stamp: ["updatedAt"] }]);
+  // An archived class can't be joined: its code goes, and comes back on restore.
+  if ("archived" in allowed) {
+    const c = await getDoc("classrooms/" + classId);
+    if (c && c.code) {
+      const op = allowed.archived ? commit([{ del: "classCodes/" + c.code }]) : setCode(c);
+      await op.catch(() => {});
+    }
+  }
 }
 
 // Remove a student from one of my classes. Their access record goes too, unless
@@ -181,6 +269,7 @@ export function update(classId, fields) {
 export async function remove(classId, studentUid) {
   const u = await me();
   const changes = [{ del: "classrooms/" + classId + "/members/" + studentUid }];
+  commit([{ del: enrollmentKey(classId, studentUid) }]).catch(() => {});   // separate: refused before Phase 3.1
   const others = (await teaching({ includeArchived: true })).filter((c) => c.id !== classId);
   let stillMine = false;
   for (const c of others) {
@@ -196,25 +285,38 @@ export async function remove(classId, studentUid) {
 export async function join(rawCode) {
   const u = await me();
   const code = normalizeCode(rawCode);
-  const found = await query("", {
-    from: [{ collectionId: "classrooms" }],
-    where: and(where("code", code), where("archived", false)),
-    limit: 1
-  });
-  if (!found.length) throw new Error("No class has that code. Check it with your teacher.");
-  const c = found[0];
-  if (c.teacherUid === u.uid) throw new Error("That's your own class. Share the code with your students.");
-  // Two steps: the rules only allow the access record once the membership exists.
-  // If the second step fails, ensureAccess() makes the record on the next visit.
+  const NOPE = "No class has that code. Check it with your teacher.";
+  // Phase 3.1: look the code up directly. Before those rules, find the class by listing.
+  let classId, teacherUid, c = null;
+  try {
+    const hit = await getDoc("classCodes/" + code);
+    if (!hit) throw new Error(NOPE);
+    classId = hit.classroomId; teacherUid = hit.teacherUid;
+  } catch (e) {
+    if (e.code !== "denied") throw e;
+    const found = await query("", {
+      from: [{ collectionId: "classrooms" }],
+      where: and(where("code", code), where("archived", false)),
+      limit: 1
+    });
+    if (!found.length) throw new Error(NOPE);
+    c = found[0]; classId = c.id; teacherUid = c.teacherUid;
+  }
+  if (teacherUid === u.uid) throw new Error("That's your own class. Share the code with your students.");
+  // Membership first (it carries the code, which the rules check); the class itself is
+  // readable once I'm in it. The access record and enrollment need the membership too.
+  // If either later step fails, the next visit fills it in.
   await commit([
-    { set: "classrooms/" + c.id + "/members/" + u.uid, data: { displayName: u.name || u.email, email: u.email || "" }, stamp: ["joinedAt"] }
+    { set: "classrooms/" + classId + "/members/" + u.uid, data: { displayName: u.name || u.email, email: u.email || "", code }, stamp: ["joinedAt"] }
   ]);
+  if (!c) c = await getDoc("classrooms/" + classId);
   await commit([
-    { set: "classAccess/" + c.teacherUid + "_" + u.uid,
-      data: { teacherUid: c.teacherUid, studentUid: u.uid, classroomId: c.id, studentName: u.name || u.email },
+    { set: "classAccess/" + teacherUid + "_" + u.uid,
+      data: { teacherUid, studentUid: u.uid, classroomId: classId, studentName: u.name || u.email },
       stamp: ["updatedAt"] }
   ]).catch(() => {});
-  return Object.assign(c, { apps: c.apps || [] });
+  await setEnrollment(classId, u.uid, teacherUid).catch(() => {});
+  return Object.assign(c || { id: classId, name: "your class" }, { apps: (c && c.apps) || [] });
 }
 
 export async function leave(classId) {
@@ -223,6 +325,9 @@ export async function leave(classId) {
   const c = classes.find((x) => x.id === classId);
   if (!c) return;
   const changes = [{ del: "classrooms/" + classId + "/members/" + u.uid }];
+  // The enrollment goes too (once the Phase 3.1 rules are live; before that, deleting a
+  // record the rules don't know about would fail the whole change, so it's separate).
+  commit([{ del: enrollmentKey(classId, u.uid) }]).catch(() => {});
   // Keep the teacher's access if I'm still in another of their classes.
   if (!classes.some((x) => x.id !== classId && x.teacherUid === c.teacherUid)) {
     changes.push({ del: "classAccess/" + c.teacherUid + "_" + u.uid });

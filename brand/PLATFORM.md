@@ -70,8 +70,8 @@ The code of every app is public on GitHub Pages; only listing and data access ca
 - The architecture above is accepted.
 
 ## Email
-- **help@walshclassroom.com** forwards to Tom's inbox through Cloudflare Email Routing (free). It's listed on the Teachers page. Setup is Tom's, in the Cloudflare dashboard.
-- **Outgoing mail, first step (no code):** add help@walshclassroom.com as a "Send mail as" address in Gmail, using the SMTP server of a free email-sending service (Brevo or Resend). Cloudflare only receives mail; it can't send it. The service has Tom add a few DNS records in Cloudflare so the mail isn't marked as spam.
+- **help@walshclassroom.com** forwards to Tom's inbox through Cloudflare Email Routing (free). It's listed on the Teachers page. Live since Nov 19 2026: one routing rule (help@ → Tom's Gmail); the catch-all stays off, so other addresses bounce.
+- **Outgoing mail (set up Nov 19 2026, no code):** help@walshclassroom.com is a "Send mail as" address in thewalshclassroom@gmail.com, sending through Brevo's free SMTP relay (smtp-relay.brevo.com:587). walshclassroom.com is authenticated in Brevo with four Cloudflare DNS records: the `brevo-code` TXT at the root, `brevo1._domainkey` and `brevo2._domainkey` CNAMEs (DNS only, not proxied), and `_dmarc` TXT `v=DMARC1; p=none; rua=mailto:rua@dmarc.brevo.com`. The SPF record was left as Cloudflare's. A future admin mail panel can send through the same Brevo account.
 - **Admin mail feature (Phase 3):** a Send email panel for admin accounts in the hub. The page can't send mail on its own, so it calls a small Cloudflare Worker (free tier) that checks the Firebase sign-in token is an admin's, then sends through the same email service's API. Uses: replying to help requests, sending teacher invite codes, class announcements. Never sends to students without a reason a school would sign off on (check with ACS first).
 
 ## Still to check
@@ -89,6 +89,7 @@ The code of every app is public on GitHub Pages; only listing and data access ca
 - `platform/auth.js`, loaded on demand by `wc.js`: `wc.user()`, `wc.role()`, `wc.onAuth()`, `wc.signOut()`, `wc.signInUrl()`. It reuses the page's Firebase app and reads the role over Firestore's REST API, so apps keep control of their own Firestore settings.
 - Narrative Studio's own login form is gone. Signed-out visitors go to the hub's account page and come back. One sign-in covers the whole site, because the hub and the apps share walshclassroom.com.
 - Security rules (published Nov 13 2026, copy in `platform/firestore.rules`): roles are protected; a confirmed .org/.edu email makes a teacher; invite codes, comment templates and teacher tips work again; teachers can make their own classrooms. Tested in the Rules Playground before publishing.
+- **Phase 3.1 (Nov 19 2026, drafted, not yet published):** a live test showed any signed-in account could list every class with its join code, so anyone could join any class. Fix: join codes live in `classCodes/{code}` (look up, never list); students find their classes through `enrollments/{classroomId}_{uid}`; classes are readable only by their teacher, students and Tom; a membership must carry the class code. The hub (`platform/classes.js`) and Narrative Studio fall back to the old way while the old rules are live. After publishing, opening the hub Classes page as a teacher fills in codes and enrollments for existing classes.
 - Not yet tested live: redeeming an invite code (needs a second, non-teacher account), and the full log out / log in round trip through Narrative Studio.
 - Still Tom-only until Phase 3: reading student workspaces and comments.
 

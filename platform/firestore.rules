@@ -14,6 +14,10 @@
 //   2. Rosters are teacher-only: students can't list a class's members any more.
 //   3. classrooms/{id}/shared: the projects students share with their class, readable
 //      by the class, so classmate sharing no longer needs the roster.
+//
+// Phase 3.1 (DRAFT, Nov 19 2026, not yet published): classes are no longer readable by
+// every signed-in account. Join codes move to classCodes/{code} (look up, never list),
+// and students find their classes through enrollments/{classroomId}_{uid}.
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -127,13 +131,46 @@ service cloud.firestore {
       allow delete: if signedIn() && (resource.data.studentUid == me() || resource.data.teacherUid == me() || isMaster());
     }
 
+    // ── Join codes (Phase 3.1) ───────────────────────────────────
+    // classCodes/{code} → { classroomId, teacherUid }. Students look a code up directly;
+    // nobody but Tom can list them, so codes can't be harvested. A code exists only
+    // while its class is open: archiving deletes it, restoring makes it again.
+    function codePath(code) { return /databases/$(database)/documents/classCodes/$(code); }
+    match /classCodes/{code} {
+      allow get: if signedIn();
+      allow list: if isMaster();
+      allow create: if signedIn()
+        && request.resource.data.teacherUid == me()
+        && get(classPath(request.resource.data.classroomId)).data.teacherUid == me()
+        && get(classPath(request.resource.data.classroomId)).data.code == code;
+      allow delete: if signedIn() && (resource.data.teacherUid == me() || isMaster());
+    }
+
+    // ── Enrollments (Phase 3.1) ──────────────────────────────────
+    // enrollments/{classroomId}_{uid}: how a student finds their own classes without
+    // listing everyone's. Written by the student when they join (or by the class's
+    // teacher, to fill in students who joined before these existed).
+    match /enrollments/{key} {
+      allow get, list: if signedIn()
+        && (resource.data.uid == me() || resource.data.teacherUid == me() || isMaster());
+      allow create, update: if signedIn()
+        && key == request.resource.data.classroomId + '_' + request.resource.data.uid
+        && (request.resource.data.uid == me() || request.resource.data.teacherUid == me() || isMaster())
+        && get(classPath(request.resource.data.classroomId)).data.teacherUid == request.resource.data.teacherUid
+        && exists(memberPath(request.resource.data.classroomId, request.resource.data.uid));
+      allow delete: if signedIn()
+        && (resource.data.uid == me() || resource.data.teacherUid == me() || isMaster());
+    }
+
     // ── Classrooms ───────────────────────────────────────────────
     match /classrooms/{classroomId} {
       function myClassroom() { return resource.data.teacherUid == me(); }
       function teachesThis() { return get(classPath(classroomId)).data.teacherUid == me(); }
       function inThis() { return exists(memberPath(classroomId, me())); }
-      // Anyone signed in can read classrooms (needed to join by code).
-      allow read: if signedIn();
+      // Phase 3.1: a class is readable by its teacher, its students and Tom, and only
+      // its teacher (or Tom) can list it. Joining goes through classCodes instead.
+      allow get: if signedIn() && (resource.data.teacherUid == me() || isMaster() || inThis());
+      allow list: if signedIn() && (resource.data.teacherUid == me() || isMaster());
       // Teachers make their own; Tom can still manage all of them.
       allow create: if isTeacher() && request.resource.data.teacherUid == me();
       allow update, delete: if isMaster() || (isTeacher() && myClassroom());
@@ -141,8 +178,11 @@ service cloud.firestore {
       match /members/{memberUid} {
         // Rosters are teacher-only (Phase 3): the class's teacher, Tom, and each student's own entry.
         allow read: if signedIn() && (me() == memberUid || isMaster() || teachesThis());
-        // Students add or remove themselves; the class's teacher (and Tom) can remove anyone.
-        allow create, update: if signedIn() && me() == memberUid;
+        // Students add themselves only with the class's code (Phase 3.1), and can update
+        // their own entry; the class's teacher (and Tom) can remove anyone.
+        allow create: if signedIn() && me() == memberUid
+          && get(codePath(request.resource.data.code)).data.classroomId == classroomId;
+        allow update: if signedIn() && me() == memberUid;
         allow delete: if signedIn() && (me() == memberUid || isMaster() || teachesThis());
       }
 
